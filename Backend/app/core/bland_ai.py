@@ -4,6 +4,7 @@ import os
 BLAND_API_KEY = os.getenv("BLAND_API_KEY")
 
 
+
 def start_bland_interview(phone_number: str, candidate_name: str, job_title: str, application_id: int):
 
     url = "https://api.bland.ai/v1/calls"

@@ -57,3 +57,34 @@ def get_job(job_id: int, db: Session = Depends(get_db)):
         raise HTTPException(404, "Job not found")
 
     return job
+
+@router.patch("/{job_id}/status")
+def update_job_status(
+    job_id: int,
+    status: str,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+
+    if current_user.role != "recruiter":
+        raise HTTPException(403, "Not allowed")
+
+    job = db.query(JobListing).filter(
+        JobListing.id == job_id,
+        JobListing.recruiter_id == current_user.id
+    ).first()
+
+    if not job:
+        raise HTTPException(404, "Job not found")
+
+    if status not in ["open", "closed"]:
+        raise HTTPException(400, "Invalid status")
+
+    job.status = status
+    db.commit()
+
+    return {
+        "message": f"Job status updated to {status}",
+        "job_id": job.id,
+        "status": job.status
+    }

@@ -6,14 +6,12 @@ from .job import JobResponse
 
 class ApplicationCreate(BaseModel):
     job_id: int
-    resume_url: str
 
 
 class ApplicationResponse(BaseModel):
     id: int
     user_id: int
     job_id: int
-    resume_url: str | None
     resume_score: int | None
     voice_score: int | None
     status: str

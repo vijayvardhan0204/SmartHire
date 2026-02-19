@@ -1,7 +1,13 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime , ForeignKey 
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Enum
+import enum
 from sqlalchemy.sql import func
 from ..db.database import Base
 from sqlalchemy.orm import relationship
+
+
+class JobStatus(str, enum.Enum):
+    open = "open"
+    closed = "closed"
 
 
 class JobListing(Base):
@@ -9,6 +15,7 @@ class JobListing(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     recruiter_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+
     title = Column(String(150), nullable=False)
     role = Column(String(100))
     description = Column(Text)
@@ -16,7 +23,9 @@ class JobListing(Base):
     location = Column(String(100))
     mode = Column(String(20))
     experience_required = Column(Integer)
-    status = Column(String(20), default="open")
+
+    status = Column(Enum(JobStatus), default=JobStatus.open)
+
     resume_min_score = Column(Integer, default=40)
     interview_min_score = Column(Integer, default=60)
 

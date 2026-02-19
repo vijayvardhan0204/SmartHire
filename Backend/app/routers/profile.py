@@ -3,7 +3,14 @@ from sqlalchemy.orm import Session
 
 from ..db.database import get_db
 from ..models.profile import Profile
-from ..schemas.profile import ProfileCreate, ProfileResponse
+from ..models.user import User
+from ..models.job import JobListing
+from ..models.application import CandidateApplication
+from ..schemas.profile import (
+    ProfileCreate,
+    ProfileResponse,
+    RecruiterCandidateProfileResponse
+)
 from ..core.auth import get_current_user
 
 router = APIRouter(
@@ -56,3 +63,43 @@ def get_my_profile(
         raise HTTPException(status_code=404, detail="Profile not found")
 
     return profile
+
+
+@router.get("/candidate/{candidate_user_id}", response_model=RecruiterCandidateProfileResponse)
+def get_candidate_profile_for_recruiter(
+    candidate_user_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    if (current_user.role or "").lower() != "recruiter":
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    has_access = (
+        db.query(CandidateApplication.id)
+        .join(JobListing, JobListing.id == CandidateApplication.job_id)
+        .filter(
+            CandidateApplication.user_id == candidate_user_id,
+            JobListing.recruiter_id == current_user.id
+        )
+        .first()
+    )
+
+    if not has_access:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    candidate = db.query(User).filter(User.id == candidate_user_id).first()
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Candidate not found")
+
+    profile = db.query(Profile).filter(Profile.user_id == candidate_user_id).first()
+
+    return {
+        "user_id": candidate.id,
+        "name": candidate.name,
+        "email": candidate.email,
+        "phone": candidate.phone,
+        "full_name": profile.full_name if profile else None,
+        "company_name": profile.company_name if profile else None,
+        "experience_years": profile.experience_years if profile else None,
+        "skills": profile.skills if profile else None
+    }

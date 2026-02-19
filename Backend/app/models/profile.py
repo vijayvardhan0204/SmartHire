@@ -11,7 +11,7 @@ class Profile(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), unique=True)
     full_name = Column(String(100))
     company_name = Column(String(150))
-    experience_years = Column(Integer)
+    experience_years = Column(String(30))
     skills = Column(Text)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

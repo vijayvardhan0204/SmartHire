@@ -1,47 +1,40 @@
 from google import genai
 import os
 import json
+import re
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-# Initialize Gemini client
 client = genai.Client(
     api_key=os.getenv("GOOGLE_API_KEY")
 )
 
 
 def analyze_resume_with_ai(resume_text: str, job_description: str):
-    """
-    Uses Gemini AI to compare resume with job description
-    and return score + missing skills + explanation.
-    """
 
     prompt = f"""
-    Compare the resume with the job description.
+You are an AI HR evaluator.
 
-    Resume:
-    {resume_text}
+Compare the resume with the job description carefully.
 
-    Job Description:
-    {job_description}
+Resume:
+{resume_text[:4000]}
 
-    Give:
-    1. Match score out of 100
-    2. Missing skills
-    3. Short explanation
+Job Description:
+{job_description[:3000]}
 
-    IMPORTANT:
-    Return ONLY valid JSON. No extra text.
+Return ONLY valid JSON in this exact format:
 
-    Format:
-    {{
-        "score": number,
-        "missing_skills": [],
-        "reason": ""
-    }}
-    """
+{{
+    "score": number,
+    "missing_skills": [],
+    "reason": ""
+}}
+
+Do NOT include markdown.
+Do NOT include explanation outside JSON.
+"""
 
     try:
         response = client.models.generate_content(
@@ -51,7 +44,9 @@ def analyze_resume_with_ai(resume_text: str, job_description: str):
 
         result_text = response.text.strip()
 
-        # Convert AI response string -> JSON
+        # 🔥 Remove markdown if Gemini adds it
+        result_text = re.sub(r"```json|```", "", result_text).strip()
+
         result_json = json.loads(result_text)
 
         return result_json
@@ -59,7 +54,6 @@ def analyze_resume_with_ai(resume_text: str, job_description: str):
     except Exception as e:
         print("AI Resume Scoring Failed:", e)
 
-        # Fallback response (VERY IMPORTANT for production)
         return {
             "score": 60,
             "missing_skills": [],

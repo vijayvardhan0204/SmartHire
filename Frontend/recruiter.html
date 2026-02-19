@@ -2,23 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SmartHire - Recruiter</title>
+    <title>SmartHire - Recruiter Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<h2>Recruiter Dashboard</h2>
-<p>Welcome Recruiter</p>
-
-<button onclick="logout()">Logout</button>
-
 <script>
-function logout(){
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        window.location.href = "index.html";
+    } else if ((role || "").toLowerCase() !== "recruiter") {
+        window.location.href = "index.html";
+    }
+</script>
+
+<header class="navbar">
+    <h2>Recruiter Dashboard</h2>
+    <div class="navbar-actions">
+        <a class="nav-link-btn" href="job-listing.html">Manage Jobs</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<main class="dashboard-shell">
+    <section class="stats-grid" id="recruiterStats"></section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>My Job Openings</h3>
+        </div>
+        <div id="recruiterJobs" class="stack-list"></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>Applicants by Job</h3>
+        </div>
+        <div id="applicationsByJob" class="stack-list"></div>
+    </section>
+</main>
+
+<script src="js/recruiter-dashboard.js"></script>
+<script>
+function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     window.location.href = "index.html";
 }
 </script>
-
 </body>
 </html>

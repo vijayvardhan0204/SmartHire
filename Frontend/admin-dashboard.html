@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHire - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        window.location.href = "index.html";
+    } else if ((role || "").toLowerCase() !== "admin") {
+        window.location.href = "index.html";
+    }
+</script>
+
+<header class="navbar">
+    <h2>Admin Dashboard</h2>
+    <div class="navbar-actions">
+        <a class="nav-link-btn" href="jobs.html">Browse Jobs</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<main class="dashboard-shell">
+    <section class="stats-grid" id="adminStats"></section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>Users by Role</h3>
+        </div>
+        <div id="usersByRole" class="stack-list"></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>Applications by Status</h3>
+        </div>
+        <div id="applicationsByStatus" class="stack-list"></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>Recent Jobs</h3>
+        </div>
+        <div id="recentJobs" class="stack-list"></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>All Users</h3>
+        </div>
+        <div id="allUsers" class="stack-list"></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>Recruiter Details</h3>
+        </div>
+        <div id="recruiterDetails" class="stack-list"></div>
+    </section>
+</main>
+
+<script src="js/admin-dashboard.js"></script>
+<script>
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "index.html";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHire - Job Listing</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        window.location.href = "index.html";
+    } else if ((role || "").toLowerCase() !== "recruiter") {
+        window.location.href = "index.html";
+    }
+</script>
+
+<header class="navbar">
+    <h2>Job Listing</h2>
+    <div class="navbar-actions">
+        <a class="nav-link-btn" href="recruiter.html">Dashboard</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<main class="dashboard-shell">
+    <section class="panel">
+        <div class="panel-head">
+            <h3>Create Job</h3>
+        </div>
+        <form id="createJobForm" class="grid-form">
+            <input id="jobTitle" type="text" placeholder="Job Title" required>
+            <input id="jobRole" type="text" placeholder="Role">
+            <input id="jobLocation" type="text" placeholder="Location">
+            <input id="jobMode" type="text" placeholder="Mode (Remote/Hybrid/Onsite)">
+            <input id="jobPackage" type="text" placeholder="Package">
+            <input id="jobExperience" type="number" placeholder="Experience Required (Years)">
+            <input id="resumeMin" type="number" placeholder="Min Resume Score">
+            <input id="interviewMin" type="number" placeholder="Min Interview Score">
+            <textarea id="jobDescription" placeholder="Job Description"></textarea>
+            <button type="submit">Create Job</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h3>My Jobs</h3>
+        </div>
+        <div id="myJobsList" class="stack-list"></div>
+    </section>
+</main>
+
+<script src="js/job-listing.js"></script>
+<script>
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "index.html";
+}
+</script>
+</body>
+</html>

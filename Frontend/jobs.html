@@ -20,12 +20,16 @@
 <!-- Navbar -->
 <header class="navbar">
     <h2>SmartHire</h2>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="navbar-actions">
+        <a id="homeLink" class="nav-link-btn" href="dashboard.html">Home</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 </header>
 
 <!-- Jobs Section -->
 <div class="jobs-container">
     <h2>Available Jobs</h2>
+    <input id="jobSearch" type="text" placeholder="Search by title, role, location, mode">
     <div id="jobsContainer"></div>
 </div>
 

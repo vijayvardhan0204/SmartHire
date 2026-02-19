@@ -32,8 +32,12 @@ try {
         // ✅ Redirect based on role
         if (data.role === "candidate") {
             window.location.href = "dashboard.html";
-        } else {
+        } else if (data.role === "recruiter") {
             window.location.href = "recruiter.html";
+        } else if (data.role === "admin") {
+            window.location.href = "admin-dashboard.html";
+        } else {
+            window.location.href = "index.html";
         }
 
     } else {

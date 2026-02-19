@@ -20,7 +20,10 @@
 <!-- Navbar -->
 <header class="navbar">
     <h2>SmartHire</h2>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="navbar-actions">
+        <a class="nav-link-btn" href="jobs.html">Browse Jobs</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 </header>
 
 <div class="dashboard-layout">
@@ -72,13 +75,17 @@
 
         <form id="profileForm">
 
-            <input id="updateFullName" placeholder="Full Name" required>
+            <input id="updateFullName" placeholder="Full Name">
 
             <input id="updateCompany" placeholder="Company Name">
 
-            <input id="updateExperience"
-                   type="number"
-                   placeholder="Experience (Years)">
+            <select id="updateExperience">
+                <option value="">Select Experience</option>
+                <option value="fresher">Fresher</option>
+                <option value="1 to 3 years">1 to 3 years</option>
+                <option value="4 to 8 years">4 to 8 years</option>
+                <option value="9 and above">9 and above</option>
+            </select>
 
             <input id="updateSkills" placeholder="Skills">
 

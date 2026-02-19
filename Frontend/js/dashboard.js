@@ -1,4 +1,56 @@
 let currentProfile = null;
+const API_BASE = `${window.location.protocol === "file:" ? "http:" : window.location.protocol}//${window.location.hostname || "127.0.0.1"}:8000`;
+const STATUS_LABELS = {
+    applied: "Applied",
+    interview_scheduled: "Interview Scheduled",
+    interview_pending: "Interview Scheduled",
+    interview_in_progress: "Interview In Progress",
+    no_answer: "No Answer",
+    busy: "Busy",
+    failed: "Failed",
+    shortlisted: "Shortlisted",
+    rejected: "Rejected",
+    selected: "Selected",
+    hired: "Hired"
+};
+
+function formatStatus(status) {
+    const key = (status || "").toLowerCase();
+    return STATUS_LABELS[key] || (status || "-");
+}
+
+function statusClass(status) {
+    const key = (status || "").toLowerCase();
+    return `status-chip status-${key.replace(/[^a-z0-9_-]/g, "")}`;
+}
+
+function normalizeExperienceLevel(value) {
+    if (value === null || typeof value === "undefined" || value === "") {
+        return "";
+    }
+
+    const text = String(value).trim();
+    const lower = text.toLowerCase();
+    if (["fresher", "1 to 3 years", "4 to 8 years", "9 and above"].includes(lower)) {
+        return lower;
+    }
+
+    const numeric = Number(text);
+    if (Number.isNaN(numeric)) {
+        return "";
+    }
+    if (numeric <= 0) return "fresher";
+    if (numeric <= 3) return "1 to 3 years";
+    if (numeric <= 8) return "4 to 8 years";
+    return "9 and above";
+}
+
+function displayExperience(value) {
+    const normalized = normalizeExperienceLevel(value);
+    if (!normalized) return "-";
+    if (normalized === "fresher") return "Fresher";
+    return normalized;
+}
 
 async function loadDashboard() {
 
@@ -6,7 +58,7 @@ async function loadDashboard() {
 
     // ---------------- LOAD PROFILE ----------------
     const profileRes = await fetch(
-        "http://127.0.0.1:8000/profile/me",
+        `${API_BASE}/profile/me`,
         {
             headers: {
                 "Authorization": "Bearer " + token
@@ -29,7 +81,7 @@ async function loadDashboard() {
 
     // ---------------- LOAD APPLICATIONS ----------------
     const appRes = await fetch(
-        "http://127.0.0.1:8000/applications/my",
+        `${API_BASE}/applications/my`,
         {
             headers: {
                 "Authorization": "Bearer " + token
@@ -43,11 +95,13 @@ async function loadDashboard() {
     container.innerHTML = "";
 
     applications.forEach(app => {
+        const status = (app.status || "").toLowerCase();
         container.innerHTML += `
             <div class="application-card">
                 <h4>${app.job.title}</h4>
-                <p><b>Score:</b> ${app.resume_score}</p>
-                <p><b>Status:</b> ${app.status}</p>
+                <p><b>Resume Score:</b> ${app.resume_score ?? "-"}</p>
+                <p><b>Interview Score:</b> ${app.voice_score ?? "-"}</p>
+                <p><b>Status:</b> <span class="${statusClass(status)}">${formatStatus(status)}</span></p>
             </div>
         `;
     });
@@ -69,7 +123,7 @@ function openProfile() {
             currentProfile.company_name || "";
 
         document.getElementById("updateExperience").value =
-            currentProfile.experience_years || "";
+            normalizeExperienceLevel(currentProfile.experience_years);
 
         document.getElementById("updateSkills").value =
             currentProfile.skills || "";
@@ -91,7 +145,7 @@ function showProfile() {
             currentProfile.company_name || "-";
 
         document.getElementById("viewExperience").innerText =
-            currentProfile.experience_years || "-";
+            displayExperience(currentProfile.experience_years);
 
         document.getElementById("viewSkills").innerText =
             currentProfile.skills || "-";
@@ -115,45 +169,62 @@ document.addEventListener("DOMContentLoaded", () => {
     profileForm.addEventListener("submit", async function(e) {
 
         e.preventDefault();
+        const saveButton = profileForm.querySelector('button[type="submit"]');
+        if (saveButton) {
+            saveButton.disabled = true;
+            saveButton.textContent = "Saving...";
+        }
 
-        const token = localStorage.getItem("token");
+        try {
+            const token = localStorage.getItem("token");
 
-        const full_name =
-            document.getElementById("updateFullName").value;
+            const full_name =
+                document.getElementById("updateFullName").value.trim() || null;
 
-        const company_name =
-            document.getElementById("updateCompany").value;
+            const company_name =
+                document.getElementById("updateCompany").value.trim() || null;
 
-        const experience_years =
-            document.getElementById("updateExperience").value;
+            const experience_years =
+                normalizeExperienceLevel(document.getElementById("updateExperience").value) || null;
 
-        const skills =
-            document.getElementById("updateSkills").value;
+            const skills =
+                document.getElementById("updateSkills").value.trim() || null;
 
-        const response = await fetch(
-            "http://127.0.0.1:8000/profile/",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + token
-                },
-                body: JSON.stringify({
-                    full_name,
-                    company_name,
-                    experience_years,
-                    skills
-                })
+            const response = await fetch(
+                `${API_BASE}/profile/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        full_name,
+                        company_name,
+                        experience_years,
+                        skills
+                    })
+                }
+            );
+
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.detail || "Profile update failed");
             }
-        );
 
-        if (response.ok) {
             alert("Profile updated successfully");
             closeProfile();
-            loadDashboard();
-        } else {
-            alert("Profile update failed");
+            await loadDashboard();
+        } catch (error) {
+            alert(error.message || "Profile update failed");
+        } finally {
+            if (saveButton) {
+                saveButton.disabled = false;
+                saveButton.textContent = "Save";
+            }
         }
     });
 
 });
+
+setInterval(loadDashboard, 15000);

@@ -93,6 +93,57 @@ function profileContainerId(applicationId) {
     return `candidate-profile-${applicationId}`;
 }
 
+function transcriptContainerId(applicationId) {
+    return `candidate-transcript-${applicationId}`;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function renderTranscriptDetails(transcript) {
+    return `
+        <p><b>Bland AI Transcript:</b></p>
+        <pre style="white-space: pre-wrap; margin: 0;">${escapeHtml(transcript)}</pre>
+    `;
+}
+
+async function toggleTranscript(applicationId) {
+    const container = document.getElementById(transcriptContainerId(applicationId));
+    if (!container) return;
+
+    if (container.dataset.open === "true") {
+        container.style.display = "none";
+        container.dataset.open = "false";
+        return;
+    }
+
+    if (container.dataset.loaded !== "true") {
+        try {
+            container.innerHTML = "<p>Loading transcript...</p>";
+            const data = await getJson(`${API_BASE}/applications/${applicationId}/transcript`);
+            if (!data.transcript) {
+                container.innerHTML = "<p>Transcript not available yet.</p>";
+                container.dataset.loaded = "false";
+            } else {
+                container.innerHTML = renderTranscriptDetails(data.transcript);
+                container.dataset.loaded = "true";
+            }
+        } catch (error) {
+            container.innerHTML = `<p>${error.message || "Unable to load transcript."}</p>`;
+            container.dataset.loaded = "false";
+        }
+    }
+
+    container.style.display = "block";
+    container.dataset.open = "true";
+}
+
 function renderProfileDetails(profile) {
     return `
         <div class="score-row">
@@ -138,6 +189,7 @@ async function toggleCandidateProfile(applicationId, userId) {
 }
 
 window.toggleCandidateProfile = toggleCandidateProfile;
+window.toggleTranscript = toggleTranscript;
 
 function renderStats(jobs, applications) {
     const stats = document.getElementById("recruiterStats");
@@ -212,8 +264,10 @@ function renderApplicationsByJob(jobs, applicationsByJob) {
                         <p>Interview Feedback: ${safeValue(app.interview_feedback)}</p>
                         <div class="status-controls">
                             <button type="button" onclick="toggleCandidateProfile(${app.application_id}, ${app.user_id})">View Profile</button>
+                            ${(app.status || "").toLowerCase() === "shortlisted" ? `<button type="button" onclick="toggleTranscript(${app.application_id})">View Transcript</button>` : ""}
                         </div>
                         <div id="${profileContainerId(app.application_id)}" class="empty-state" style="display:none;" data-loaded="false" data-open="false"></div>
+                        <div id="${transcriptContainerId(app.application_id)}" class="empty-state" style="display:none;" data-loaded="false" data-open="false"></div>
                         <div class="status-controls">
                             <select id="status-${app.application_id}">
                                 <option value="selected" ${["selected", "shortlisted", "hired"].includes((app.status || "").toLowerCase()) ? "selected" : ""}>Selected</option>
@@ -265,3 +319,4 @@ async function loadRecruiterDashboard() {
 }
 
 loadRecruiterDashboard();
+

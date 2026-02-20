@@ -3,6 +3,74 @@ const authToken = localStorage.getItem("token");
 const role = (localStorage.getItem("role") || "").toLowerCase();
 
 let allJobs = [];
+function ensurePopupModal() {
+    let modal = document.getElementById("appMessageModal");
+    if (modal) return modal;
+
+    modal = document.createElement("div");
+    modal.id = "appMessageModal";
+    modal.style.position = "fixed";
+    modal.style.inset = "0";
+    modal.style.background = "rgba(0,0,0,0.45)";
+    modal.style.display = "none";
+    modal.style.alignItems = "center";
+    modal.style.justifyContent = "center";
+    modal.style.zIndex = "9999";
+
+    const card = document.createElement("div");
+    card.style.background = "#fff";
+    card.style.color = "#1f2937";
+    card.style.maxWidth = "560px";
+    card.style.width = "90%";
+    card.style.padding = "20px";
+    card.style.borderRadius = "12px";
+    card.style.boxShadow = "0 12px 40px rgba(0,0,0,0.2)";
+
+    const message = document.createElement("p");
+    message.id = "appMessageText";
+    message.style.margin = "0 0 16px";
+    message.style.lineHeight = "1.5";
+
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.justifyContent = "flex-end";
+
+    const okBtn = document.createElement("button");
+    okBtn.type = "button";
+    okBtn.textContent = "OK";
+    okBtn.style.padding = "8px 14px";
+    okBtn.style.border = "none";
+    okBtn.style.borderRadius = "8px";
+    okBtn.style.background = "#2563eb";
+    okBtn.style.color = "#fff";
+    okBtn.style.cursor = "pointer";
+    okBtn.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    actions.appendChild(okBtn);
+    card.appendChild(message);
+    card.appendChild(actions);
+    modal.appendChild(card);
+    document.body.appendChild(modal);
+
+    modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    return modal;
+}
+
+function showPopup(message) {
+    const modal = ensurePopupModal();
+    const messageEl = document.getElementById("appMessageText");
+    if (messageEl) {
+        messageEl.textContent = message;
+    }
+    modal.style.display = "flex";
+}
 
 function updateHomeLink() {
     const homeLink = document.getElementById("homeLink");
@@ -53,13 +121,13 @@ async function uploadResumeFile(applicationId, file) {
 
 async function createApplicationAndUploadResume(jobId) {
     if (!authToken) {
-        alert("Please login again.");
+        showPopup("Please login again.");
         window.location.href = "index.html";
         return;
     }
 
     if (role !== "candidate") {
-        alert("Only candidates can apply for jobs.");
+        showPopup("Only candidates can apply for jobs.");
         return;
     }
 
@@ -85,17 +153,22 @@ async function createApplicationAndUploadResume(jobId) {
             throw new Error("Application created, but no application id returned.");
         }
 
-        alert("Application created. Please upload your resume PDF now.");
+        showPopup("Application created. Please upload your resume PDF now.");
         const file = await pickResumeFile();
         if (!file) {
-            alert("Application saved. Upload resume later from dashboard to start shortlisting.");
+            showPopup("Application saved. Upload resume later from dashboard to start shortlisting.");
             return;
         }
 
-        await uploadResumeFile(applicationId, file);
-        alert("Resume uploaded and shortlisting started.");
+        const uploadData = await uploadResumeFile(applicationId, file);
+
+        if ((uploadData.status || "").toLowerCase() === "interview_scheduled") {
+            showPopup("Your resume has been uploaded successfully. Please answer the upcoming interview call and complete the screening process.");
+        } else {
+            showPopup("Resume uploaded successfully, but your score did not meet the minimum requirement for interview shortlisting.");
+        }
     } catch (error) {
-        alert(error.message || "Unable to apply right now.");
+        showPopup(error.message || "Unable to apply right now.");
     }
 }
 
@@ -170,3 +243,7 @@ async function loadJobs() {
 updateHomeLink();
 document.getElementById("jobSearch").addEventListener("input", filterJobs);
 loadJobs();
+
+
+
+

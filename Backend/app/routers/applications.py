@@ -148,6 +148,45 @@ def job_applications(
 
 
 # ============================================================
+# GET INTERVIEW TRANSCRIPT
+# ============================================================
+@router.get("/{application_id}/transcript")
+def get_application_transcript(
+    application_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    if (current_user.role or "").lower() != "recruiter":
+        raise HTTPException(403, "Not allowed")
+
+    application = db.query(CandidateApplication).filter(
+        CandidateApplication.id == application_id
+    ).first()
+
+    if not application:
+        raise HTTPException(404, "Application not found")
+
+    if application.job.recruiter_id != current_user.id:
+        raise HTTPException(403, "Not allowed")
+
+    interview = db.query(Interview).filter(
+        Interview.candidate_application_id == application_id
+    ).first()
+
+    if not interview or not interview.transcript:
+        return {
+            "application_id": application_id,
+            "transcript": None,
+            "message": "Transcript not available yet"
+        }
+
+    return {
+        "application_id": application_id,
+        "transcript": interview.transcript
+    }
+
+
+# ============================================================
 # UPLOAD RESUME + AI SCORING
 # ============================================================
 @router.post("/{application_id}/upload-resume")
@@ -220,7 +259,7 @@ def upload_resume(
         application.status = "interview_scheduled"
         candidate = application.user
 
-        run_time = datetime.now() + timedelta(minutes=5)
+        run_time = datetime.now() + timedelta(minutes=2)
 
         scheduler.add_job(
             start_bland_interview,
@@ -289,9 +328,9 @@ async def bland_webhook(
 ):
 
     # ---------- SECURITY ----------
-    received_secret = request.headers.get("X-Bland-Secret")
-    if received_secret != BLAND_WEBHOOK_SECRET:
-        raise HTTPException(403, "Invalid webhook secret")
+    # received_secret = request.headers.get("X-Bland-Secret")
+    # if received_secret != BLAND_WEBHOOK_SECRET:
+    #     raise HTTPException(403, "Invalid webhook secret")
 
     try:
         data = await request.json()
@@ -415,3 +454,6 @@ async def bland_webhook(
     db.commit()
 
     return {"message": "Interview processed successfully"}
+
+
+

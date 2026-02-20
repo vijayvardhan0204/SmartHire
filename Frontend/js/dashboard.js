@@ -1,5 +1,8 @@
 let currentProfile = null;
+let pollingInterval = null;
+
 const API_BASE = `${window.location.protocol === "file:" ? "http:" : window.location.protocol}//${window.location.hostname || "127.0.0.1"}:8000`;
+
 const STATUS_LABELS = {
     applied: "Applied",
     interview_scheduled: "Interview Scheduled",
@@ -25,20 +28,18 @@ function statusClass(status) {
 }
 
 function normalizeExperienceLevel(value) {
-    if (value === null || typeof value === "undefined" || value === "") {
-        return "";
-    }
+    if (!value) return "";
 
     const text = String(value).trim();
     const lower = text.toLowerCase();
+
     if (["fresher", "1 to 3 years", "4 to 8 years", "9 and above"].includes(lower)) {
         return lower;
     }
 
     const numeric = Number(text);
-    if (Number.isNaN(numeric)) {
-        return "";
-    }
+    if (Number.isNaN(numeric)) return "";
+
     if (numeric <= 0) return "fresher";
     if (numeric <= 3) return "1 to 3 years";
     if (numeric <= 8) return "4 to 8 years";
@@ -52,65 +53,116 @@ function displayExperience(value) {
     return normalized;
 }
 
+/* ================= SMART POLLING ================= */
+
+function startPolling() {
+    if (!pollingInterval) {
+        pollingInterval = setInterval(loadDashboard, 15000);
+        console.log("🔄 Smart polling started");
+    }
+}
+
+function stopPolling() {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+        console.log("⛔ Polling stopped");
+    }
+}
+
+/* ================= LOAD DASHBOARD ================= */
+
 async function loadDashboard() {
 
     const token = localStorage.getItem("token");
+    if (!token) return;
 
-    // ---------------- LOAD PROFILE ----------------
-    const profileRes = await fetch(
-        `${API_BASE}/profile/me`,
-        {
-            headers: {
-                "Authorization": "Bearer " + token
+    try {
+
+        /* -------- LOAD PROFILE -------- */
+
+        const profileRes = await fetch(`${API_BASE}/profile/me`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (profileRes.ok) {
+            const profile = await profileRes.json();
+            currentProfile = profile;
+
+            document.getElementById("profileName").innerText =
+                profile.full_name || "Complete Profile";
+
+            const emailElement = document.getElementById("profileEmail");
+            if (emailElement) {
+                emailElement.innerText = profile.email || "";
             }
         }
-    );
 
-    if (profileRes.ok) {
-        const profile = await profileRes.json();
-        currentProfile = profile;
+        /* -------- LOAD APPLICATIONS -------- */
 
-        document.getElementById("profileName").innerText =
-            profile.full_name || "Complete Profile";
+        const appRes = await fetch(`${API_BASE}/applications/my`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
 
-        const emailElement = document.getElementById("profileEmail");
-        if (emailElement) {
-            emailElement.innerText = profile.email || "";
+        if (!appRes.ok) return;
+
+        const applications = await appRes.json();
+
+        const container = document.getElementById("applicationsContainer");
+        container.innerHTML = "";
+
+        let needsRefresh = false;
+
+        applications.forEach(app => {
+
+            const status = (app.status || "").toLowerCase();
+
+            // Check if polling required
+            if (
+                status === "interview_scheduled" ||
+                status === "interview_pending" ||
+                status === "interview_in_progress"
+            ) {
+                needsRefresh = true;
+            }
+
+            container.innerHTML += `
+                <div class="application-card">
+                    <h4>${app.job.title}</h4>
+                    <p><b>Resume Score:</b> ${app.resume_score ?? "-"}</p>
+                    <p><b>Interview Score:</b> ${app.voice_score ?? "-"}</p>
+                    <p><b>Status:</b> 
+                        <span class="${statusClass(status)}">
+                            ${formatStatus(status)}
+                        </span>
+                    </p>
+                </div>
+            `;
+        });
+
+        // Smart Polling Decision
+        if (needsRefresh && !document.hidden) {
+            startPolling();
+        } else {
+            stopPolling();
         }
+
+    } catch (error) {
+        console.error("Dashboard load failed:", error);
     }
-
-    // ---------------- LOAD APPLICATIONS ----------------
-    const appRes = await fetch(
-        `${API_BASE}/applications/my`,
-        {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        }
-    );
-
-    const applications = await appRes.json();
-
-    const container = document.getElementById("applicationsContainer");
-    container.innerHTML = "";
-
-    applications.forEach(app => {
-        const status = (app.status || "").toLowerCase();
-        container.innerHTML += `
-            <div class="application-card">
-                <h4>${app.job.title}</h4>
-                <p><b>Resume Score:</b> ${app.resume_score ?? "-"}</p>
-                <p><b>Interview Score:</b> ${app.voice_score ?? "-"}</p>
-                <p><b>Status:</b> <span class="${statusClass(status)}">${formatStatus(status)}</span></p>
-            </div>
-        `;
-    });
 }
 
-loadDashboard();
+/* ================= TAB VISIBILITY CONTROL ================= */
 
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        stopPolling();
+    } else {
+        loadDashboard();
+    }
+});
 
-// ---------------- PROFILE MODAL ----------------
+/* ================= PROFILE MODAL ================= */
 
 function openProfile() {
     document.getElementById("profileModal").style.display = "flex";
@@ -133,6 +185,7 @@ function openProfile() {
 function closeProfile() {
     document.getElementById("profileModal").style.display = "none";
 }
+
 function showProfile() {
     document.getElementById("applicationsView").style.display = "none";
     document.getElementById("profileView").style.display = "block";
@@ -157,18 +210,19 @@ function showApplications() {
     document.getElementById("applicationsView").style.display = "block";
 }
 
-
-// ---------------- FORM SUBMIT ----------------
+/* ================= PROFILE FORM SUBMIT ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const profileForm = document.getElementById("profileForm");
+    loadDashboard(); // Initial load
 
+    const profileForm = document.getElementById("profileForm");
     if (!profileForm) return;
 
     profileForm.addEventListener("submit", async function(e) {
 
         e.preventDefault();
+
         const saveButton = profileForm.querySelector('button[type="submit"]');
         if (saveButton) {
             saveButton.disabled = true;
@@ -176,36 +230,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
+
             const token = localStorage.getItem("token");
 
-            const full_name =
-                document.getElementById("updateFullName").value.trim() || null;
-
-            const company_name =
-                document.getElementById("updateCompany").value.trim() || null;
-
-            const experience_years =
-                normalizeExperienceLevel(document.getElementById("updateExperience").value) || null;
-
-            const skills =
-                document.getElementById("updateSkills").value.trim() || null;
-
-            const response = await fetch(
-                `${API_BASE}/profile/`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    },
-                    body: JSON.stringify({
-                        full_name,
-                        company_name,
-                        experience_years,
-                        skills
-                    })
-                }
-            );
+            const response = await fetch(`${API_BASE}/profile/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    full_name: document.getElementById("updateFullName").value.trim() || null,
+                    company_name: document.getElementById("updateCompany").value.trim() || null,
+                    experience_years: normalizeExperienceLevel(
+                        document.getElementById("updateExperience").value
+                    ) || null,
+                    skills: document.getElementById("updateSkills").value.trim() || null
+                })
+            });
 
             const data = await response.json().catch(() => ({}));
             if (!response.ok) {
@@ -215,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Profile updated successfully");
             closeProfile();
             await loadDashboard();
+
         } catch (error) {
             alert(error.message || "Profile update failed");
         } finally {
@@ -224,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
-
 });
 
-setInterval(loadDashboard, 15000);
+
+

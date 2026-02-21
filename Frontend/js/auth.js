@@ -1,9 +1,22 @@
+const passwordInput = document.getElementById("password");
+const togglePasswordBtn = document.getElementById("togglePassword");
+
+if (passwordInput && togglePasswordBtn) {
+    togglePasswordBtn.addEventListener("click", function () {
+        const isHidden = passwordInput.type === "password";
+        passwordInput.type = isHidden ? "text" : "password";
+        togglePasswordBtn.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+        togglePasswordBtn.setAttribute("aria-pressed", isHidden ? "true" : "false");
+        togglePasswordBtn.classList.toggle("is-visible", isHidden);
+    });
+}
+
 document.getElementById("loginForm").addEventListener("submit", async function(e) {
 e.preventDefault();
 
 
 const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+const password = passwordInput.value;
 
 try {
     const response = await fetch("http://127.0.0.1:8000/auth/login", {

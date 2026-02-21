@@ -8,6 +8,12 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     const rawPhone = document.getElementById("phone").value;
     const digits = rawPhone.replace(/\D/g, "");
     let phone = "";
+    const passwordRule = /^(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+    if (!passwordRule.test(password)) {
+        alert("Password must be at least 8 characters and include at least 1 number and 1 special character.");
+        return;
+    }
 
     if (digits.length === 10) {
         phone = `+91${digits}`;

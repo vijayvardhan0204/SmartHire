@@ -1,20 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Libre+Baskerville:wght@700&display=swap");
+
 :root {
-    --bg: #f2f3f6;
-    --bg-ink: #0f1b2d;
-    --surface: rgba(255, 255, 255, 0.9);
-    --surface-strong: #ffffff;
-    --surface-soft: #f8f9fc;
-    --text: #152236;
-    --text-muted: #607086;
-    --line: rgba(22, 39, 68, 0.14);
-    --line-strong: rgba(22, 39, 68, 0.3);
-    --primary: #142c52;
-    --primary-hover: #0f2444;
-    --accent: #b78a41;
-    --danger: #9f1f2e;
-    --shadow-sm: 0 10px 24px rgba(15, 27, 45, 0.08);
-    --shadow: 0 18px 46px rgba(15, 27, 45, 0.14);
-    --radius: 16px;
+    --bg-0: #f2efe7;
+    --bg-1: #e5edf8;
+    --bg-2: #f5f8fc;
+    --ink-1: #172033;
+    --ink-2: #4c5d76;
+    --surface: rgba(255, 255, 255, 0.86);
+    --surface-strong: rgba(255, 255, 255, 0.96);
+    --line: rgba(25, 43, 77, 0.16);
+    --line-strong: rgba(25, 43, 77, 0.35);
+    --brand: #123b73;
+    --brand-2: #1a5daa;
+    --accent: #cb9749;
+    --danger: #9d2534;
+    --ok: #226243;
+    --shadow-sm: 0 10px 30px rgba(17, 33, 61, 0.12);
+    --shadow-md: 0 16px 44px rgba(17, 33, 61, 0.18);
+    --shadow-lg: 0 28px 70px rgba(17, 33, 61, 0.25);
+    --radius-sm: 12px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
 }
 
 *,
@@ -30,13 +36,26 @@ body {
 
 body {
     margin: 0;
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    color: var(--text);
+    font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    color: var(--ink-1);
     background:
-        radial-gradient(circle at 8% 12%, rgba(20, 44, 82, 0.14) 0, rgba(20, 44, 82, 0) 36%),
-        radial-gradient(circle at 92% 6%, rgba(183, 138, 65, 0.13) 0, rgba(183, 138, 65, 0) 34%),
-        linear-gradient(150deg, #f3f4f7 0%, #eef1f6 64%, #f5f6f9 100%);
+        radial-gradient(circle at 6% 8%, rgba(203, 151, 73, 0.18), transparent 32%),
+        radial-gradient(circle at 88% 14%, rgba(26, 93, 170, 0.2), transparent 34%),
+        radial-gradient(circle at 18% 92%, rgba(18, 59, 115, 0.14), transparent 38%),
+        linear-gradient(140deg, var(--bg-0) 0%, var(--bg-1) 44%, var(--bg-2) 100%);
     line-height: 1.5;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.2;
+    background-image: linear-gradient(rgba(18, 59, 115, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(18, 59, 115, 0.07) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at center, black 42%, transparent 86%);
 }
 
 h1,
@@ -49,19 +68,20 @@ p {
 
 h2,
 h3 {
-    font-family: "Cormorant Garamond", "Times New Roman", serif;
-    font-weight: 600;
+    font-family: "Libre Baskerville", "Times New Roman", serif;
+    font-weight: 700;
     letter-spacing: -0.02em;
+    color: #0f2648;
 }
 
 a {
-    color: var(--primary);
+    color: var(--brand);
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 a:hover {
-    color: var(--primary-hover);
+    color: #0e2f59;
     text-decoration: underline;
 }
 
@@ -70,19 +90,32 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 28px;
+    padding: 32px;
     position: relative;
 }
 
-.container::before {
+.container::before,
+.container::after {
     content: "";
     position: absolute;
-    width: min(560px, 92vw);
-    height: min(560px, 92vw);
     border-radius: 999px;
-    background: radial-gradient(circle at center, rgba(20, 44, 82, 0.16), transparent 68%);
-    filter: blur(8px);
     z-index: 0;
+    filter: blur(14px);
+}
+
+.container::before {
+    width: min(620px, 92vw);
+    height: min(620px, 92vw);
+    background: radial-gradient(circle at center, rgba(18, 59, 115, 0.22), transparent 68%);
+    transform: translate(-22%, -8%);
+}
+
+.container::after {
+    width: min(430px, 70vw);
+    height: min(430px, 70vw);
+    right: 2%;
+    bottom: 4%;
+    background: radial-gradient(circle at center, rgba(203, 151, 73, 0.24), transparent 68%);
 }
 
 .card,
@@ -96,10 +129,10 @@ a:hover {
 .panel,
 .stat-card,
 .list-card {
-    background: var(--surface);
-    backdrop-filter: blur(6px);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.96) 0%, rgba(250, 252, 255, 0.88) 100%);
+    backdrop-filter: blur(10px);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
 }
 
@@ -107,19 +140,33 @@ a:hover {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 430px;
-    padding: 32px;
+    max-width: 450px;
+    padding: 34px;
     text-align: left;
-    animation: cardIn 0.5s ease both;
+    overflow: hidden;
+    animation: cardIn 0.55s ease both;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    background: linear-gradient(130deg, rgba(18, 59, 115, 0.45), rgba(203, 151, 73, 0.35)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
 }
 
 .card h2 {
-    font-size: 31px;
-    margin-bottom: 8px;
+    font-size: 34px;
+    margin-bottom: 6px;
 }
 
 .card p {
-    color: var(--text-muted);
+    color: var(--ink-2);
     font-size: 15px;
 }
 
@@ -131,28 +178,105 @@ input,
 select,
 textarea {
     width: 100%;
-    padding: 12px 13px;
+    padding: 12px 14px;
     margin: 9px 0;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.78);
-    color: var(--text);
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--ink-1);
     font: inherit;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.12s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-    border-color: rgba(20, 44, 82, 0.5);
-    box-shadow: 0 0 0 4px rgba(20, 44, 82, 0.11);
+    border-color: rgba(26, 93, 170, 0.6);
+    box-shadow: 0 0 0 4px rgba(26, 93, 170, 0.16);
     background: #fff;
+    transform: translateY(-1px);
 }
 
 input::placeholder,
 textarea::placeholder {
-    color: #82938f;
+    color: #8291a4;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 52px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 50%;
+    line-height: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    cursor: pointer;
+    color: #1e3f6e;
+}
+
+.password-toggle:hover {
+    transform: translateY(-50%);
+    filter: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid rgba(26, 93, 170, 0.45);
+    outline-offset: 2px;
+}
+
+.eye-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eye-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.eye-open-icon {
+    display: none;
+}
+
+.eye-closed-icon {
+    display: inline-flex;
+}
+
+.password-toggle.is-visible .eye-open-icon {
+    display: inline-flex;
+}
+
+.password-toggle.is-visible .eye-closed-icon {
+    display: none;
 }
 
 button {
@@ -160,18 +284,20 @@ button {
     padding: 12px 15px;
     border: 0;
     border-radius: 11px;
-    background: linear-gradient(135deg, #1a3560 0%, #132a4d 100%);
+    background: linear-gradient(135deg, var(--brand-2) 0%, var(--brand) 78%);
     color: #fff;
     font: inherit;
     font-weight: 700;
     letter-spacing: 0.01em;
     cursor: pointer;
-    transition: transform 0.14s ease, filter 0.2s ease;
+    box-shadow: 0 10px 22px rgba(18, 59, 115, 0.28);
+    transition: transform 0.14s ease, filter 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px);
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 28px rgba(18, 59, 115, 0.35);
 }
 
 button:active {
@@ -179,7 +305,7 @@ button:active {
 }
 
 .link {
-    margin-top: 14px;
+    margin-top: 15px;
     font-size: 14px;
 }
 
@@ -192,13 +318,13 @@ button:active {
     align-items: center;
     padding: 14px 24px;
     border-bottom: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.84);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 18px rgba(11, 33, 28, 0.06);
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 24px rgba(17, 33, 61, 0.1);
 }
 
 .navbar h2 {
-    font-size: 21px;
+    font-size: 24px;
 }
 
 .navbar-actions {
@@ -211,25 +337,27 @@ button:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 98px;
-    padding: 10px 13px;
-    border-radius: 12px;
+    min-width: 110px;
+    padding: 10px 14px;
+    border-radius: 999px;
     border: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.72);
-    color: var(--text);
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--ink-1);
     text-decoration: none;
     font-weight: 700;
+    transition: all 0.18s ease;
 }
 
 .nav-link-btn:hover {
     text-decoration: none;
     background: #fff;
-    border-color: rgba(183, 138, 65, 0.5);
+    border-color: rgba(203, 151, 73, 0.62);
+    transform: translateY(-1px);
 }
 
 .logout-btn {
     width: auto;
-    min-width: 94px;
+    min-width: 96px;
 }
 
 .btn-inline {
@@ -239,24 +367,24 @@ button:active {
 
 .create-submit-btn {
     width: 90px;
-    padding: 7px 10px;
+    padding: 8px 10px;
     font-size: 14px;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .jobs-container {
-    max-width: 980px;
+    max-width: 1020px;
     margin: 28px auto;
     padding: 28px;
 }
 
 .jobs-container h2 {
-    font-size: 29px;
+    font-size: 31px;
     margin-bottom: 8px;
 }
 
 #jobSearch {
-    margin-top: 10px;
+    margin-top: 12px;
 }
 
 #jobsContainer {
@@ -267,13 +395,14 @@ button:active {
 
 .job-card {
     padding: 18px;
+    border-left: 4px solid rgba(18, 59, 115, 0.45);
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .job-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--line-strong);
-    box-shadow: var(--shadow);
+    transform: translateY(-3px);
+    border-color: rgba(203, 151, 73, 0.8);
+    box-shadow: var(--shadow-md);
 }
 
 .job-card h3 {
@@ -282,7 +411,7 @@ button:active {
 
 .job-card p {
     margin-bottom: 12px;
-    color: var(--text-muted);
+    color: var(--ink-2);
 }
 
 .job-meta {
@@ -293,12 +422,13 @@ button:active {
 }
 
 .job-meta span {
-    padding: 5px 9px;
+    padding: 5px 10px;
     border-radius: 999px;
     font-size: 12px;
-    background: rgba(20, 44, 82, 0.09);
-    border: 1px solid rgba(20, 44, 82, 0.24);
-    color: #1c355d;
+    background: rgba(18, 59, 115, 0.08);
+    border: 1px solid rgba(18, 59, 115, 0.25);
+    color: #1a3d6b;
+    font-weight: 600;
 }
 
 .job-card button {
@@ -322,7 +452,7 @@ button:active {
 
 .profile-card {
     position: sticky;
-    top: 82px;
+    top: 84px;
     height: fit-content;
 }
 
@@ -331,7 +461,7 @@ button:active {
 }
 
 .profile-card p {
-    color: var(--text-muted);
+    color: var(--ink-2);
     margin-bottom: 14px;
 }
 
@@ -353,19 +483,19 @@ button:active {
 }
 
 .application-card p {
-    color: var(--text-muted);
+    color: var(--ink-2);
     margin-top: 4px;
 }
 
 .status-chip {
     display: inline-block;
-    padding: 3px 9px;
+    padding: 4px 9px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     border: 1px solid var(--line);
-    background: var(--surface-soft);
-    color: var(--text);
+    background: #f5f8fc;
+    color: var(--ink-1);
 }
 
 .status-rejected,
@@ -381,7 +511,7 @@ button:active {
 .status-hired {
     background: #eef7f1;
     border-color: #c0dcc8;
-    color: #1f5e34;
+    color: var(--ok);
 }
 
 .status-interview_in_progress,
@@ -403,7 +533,7 @@ button:active {
 }
 
 .right-panel p {
-    color: var(--text-muted);
+    color: var(--ink-2);
 }
 
 #profileView p {
@@ -416,16 +546,17 @@ button:active {
     z-index: 1000;
     inset: 0;
     padding: 20px;
-    background: rgba(8, 18, 31, 0.52);
-    backdrop-filter: blur(4px);
+    background: rgba(9, 19, 36, 0.6);
+    backdrop-filter: blur(6px);
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
     width: 100%;
-    max-width: 420px;
+    max-width: 430px;
     padding: 24px;
+    box-shadow: var(--shadow-lg);
 }
 
 .modal-content h3 {
@@ -435,6 +566,7 @@ button:active {
 .modal-content button[type="button"] {
     margin-top: 8px;
     background: linear-gradient(135deg, #6f7f8d 0%, #5b6975 100%);
+    box-shadow: 0 10px 22px rgba(70, 83, 97, 0.28);
 }
 
 .modal-content button[type="button"]:hover {
@@ -456,16 +588,29 @@ button:active {
 }
 
 .stat-card {
-    padding: 14px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::after {
+    content: "";
+    position: absolute;
+    top: -35px;
+    right: -35px;
+    width: 95px;
+    height: 95px;
+    border-radius: 999px;
+    background: radial-gradient(circle at center, rgba(203, 151, 73, 0.28), transparent 68%);
 }
 
 .stat-card p {
-    color: var(--text-muted);
+    color: var(--ink-2);
     margin-bottom: 6px;
 }
 
 .stat-card h3 {
-    font-size: 24px;
+    font-size: 26px;
 }
 
 .panel {
@@ -477,6 +622,7 @@ button:active {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
+    gap: 10px;
 }
 
 .stack-list {
@@ -486,14 +632,14 @@ button:active {
 
 .list-card {
     padding: 13px;
-    background: rgba(255, 255, 255, 0.94);
+    background: var(--surface-strong);
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .list-card:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     border-color: var(--line-strong);
-    box-shadow: 0 14px 26px rgba(11, 33, 28, 0.08);
+    box-shadow: var(--shadow-sm);
 }
 
 .list-card h4 {
@@ -501,7 +647,7 @@ button:active {
 }
 
 .list-card p {
-    color: var(--text-muted);
+    color: var(--ink-2);
 }
 
 .role-link {
@@ -520,13 +666,13 @@ button:active {
 }
 
 .role-card:hover {
-    border-color: rgba(183, 138, 65, 0.5);
-    background: rgba(183, 138, 65, 0.1);
+    border-color: rgba(203, 151, 73, 0.55);
+    background: rgba(203, 151, 73, 0.12);
 }
 
 .role-card.active {
-    border-color: rgba(20, 44, 82, 0.5);
-    background: rgba(20, 44, 82, 0.1);
+    border-color: rgba(26, 93, 170, 0.62);
+    background: rgba(26, 93, 170, 0.1);
 }
 
 .score-row {
@@ -567,11 +713,11 @@ textarea {
 }
 
 .empty-state {
-    color: var(--text-muted);
+    color: var(--ink-2);
     padding: 11px;
     border: 1px dashed var(--line-strong);
     border-radius: 10px;
-    background: rgba(247, 250, 248, 0.9);
+    background: rgba(247, 250, 255, 0.92);
 }
 
 body > h2,
@@ -588,7 +734,7 @@ body > h2 {
 
 body > p {
     margin-top: 8px;
-    color: var(--text-muted);
+    color: var(--ink-2);
 }
 
 body > button:not(.logout-btn) {
@@ -603,23 +749,23 @@ body > button:not(.logout-btn) {
 .dashboard-layout > .profile-card,
 .dashboard-layout > .main-content,
 .dashboard-layout > .right-panel {
-    animation: cardIn 0.38s ease both;
+    animation: cardIn 0.42s ease both;
 }
 
 .dashboard-shell > .panel:nth-child(2),
 .dashboard-layout > .main-content {
-    animation-delay: 0.06s;
+    animation-delay: 0.07s;
 }
 
 .dashboard-shell > .panel:nth-child(3),
 .dashboard-layout > .right-panel {
-    animation-delay: 0.12s;
+    animation-delay: 0.13s;
 }
 
 @keyframes cardIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(12px);
     }
     to {
         opacity: 1;
@@ -642,8 +788,17 @@ body > button:not(.logout-btn) {
 }
 
 @media (max-width: 640px) {
+    body::before {
+        background-size: 34px 34px;
+        opacity: 0.14;
+    }
+
     .navbar {
         padding: 11px 14px;
+    }
+
+    .navbar h2 {
+        font-size: 20px;
     }
 
     .navbar-actions {
@@ -663,7 +818,7 @@ body > button:not(.logout-btn) {
 
     .card h2,
     .jobs-container h2 {
-        font-size: 25px;
+        font-size: 27px;
     }
 
     .dashboard-layout {

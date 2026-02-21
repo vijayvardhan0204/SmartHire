@@ -52,6 +52,11 @@ class ProfileResponse(ProfileCreate):
     model_config = ConfigDict(from_attributes=True)
 
 
+class MyProfileResponse(ProfileResponse):
+    email: str
+    phone: str | None = None
+
+
 class RecruiterCandidateProfileResponse(BaseModel):
     user_id: int
     name: str | None = None

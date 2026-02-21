@@ -1,11 +1,11 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, constr
 from datetime import datetime
 from typing import Optional
 
 class UserCreate(BaseModel):
-    name: str | None = None
+    name: constr(strip_whitespace=True, min_length=1)
     email: EmailStr
-    phone: str | None = None
+    phone: constr(strip_whitespace=True, min_length=1)
     password: str
     role: str
 

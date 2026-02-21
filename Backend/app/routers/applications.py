@@ -21,9 +21,9 @@ from ..core.resume_parser import extract_text_from_pdf
 from ..core.resume_scoring import calculate_resume_score
 from ..core.ai_resume_scoring import analyze_resume_with_ai
 from ..core.bland_ai import start_bland_interview
-from ..core.voice_scoring import calculate_voice_score
-from ..core.interview_analysis import analyze_interview
-
+# from ..core.ai_voice_scoring import calculate_voice_score
+# from ..core.interview_analysis import analyze_interview
+from ..core.ai_interview_evaluator import evaluate_interview
 
 router = APIRouter(prefix="/applications", tags=["Applications"])
 BLAND_WEBHOOK_SECRET = os.getenv("BLAND_WEBHOOK_SECRET")
@@ -72,6 +72,7 @@ def my_applications(
     return (
         db.query(CandidateApplication)
         .filter(CandidateApplication.user_id == current_user.id)
+        .order_by(CandidateApplication.created_at.desc())
         .all()
     )
 
@@ -277,10 +278,19 @@ def upload_resume(
 
     db.commit()
 
+    min_required_score = job.resume_min_score
+    is_above_min_required = (
+        True
+        if min_required_score is None
+        else resume_final_score > min_required_score
+    )
+
     return {
         "message": "Resume uploaded and analyzed",
         "resume_score": resume_final_score,
-        "status": application.status
+        "status": application.status,
+        "min_required_score": min_required_score,
+        "is_above_min_required": is_above_min_required
     }
 
 
@@ -415,38 +425,38 @@ async def bland_webhook(
     interview.ended_at = data.get("ended_at")
 
     # ============================================================
-    # VOICE SCORING
+    # VOICE SCORING (Gemini AI)
     # ============================================================
-    result = calculate_voice_score(transcript)
-
-    application.voice_score = result["voice_score"]
-    application.communication_score = result["communication_score"]
-    application.technical_score = result["technical_score"]
-    application.confidence_score = result["confidence_score"]
-    application.interview_feedback = result["feedback"]
-    application.retry_count = 0
-
     # ============================================================
-    # AI INTERVIEW ANALYSIS
+    # AI INTERVIEW ANALYSIS (Gemini AI)
     # ============================================================
-    analysis = analyze_interview(
-        transcript,
-        application.voice_score
+    evaluation = evaluate_interview(
+    transcript=transcript,
+    job_description=application.job.description
     )
 
-    interview.strengths = analysis["strengths"]
-    interview.weaknesses = analysis["weaknesses"]
-    interview.recommendation = analysis["recommendation"]
+    application.voice_score = evaluation["voice_score"]
+    application.communication_score = evaluation["communication_score"]
+    application.technical_score = evaluation["technical_score"]
+    application.confidence_score = evaluation["confidence_score"]
+    application.interview_feedback = evaluation["feedback"]
+
+    interview.strengths = evaluation["strengths"]
+    interview.weaknesses = evaluation["weaknesses"]
+    interview.recommendation = evaluation["recommendation"]
+    application.retry_count = 0
+
+
+    
+    
+
 
     # ============================================================
-    # FINAL DECISION
+    # FINAL DECISION (Your Existing Logic)
     # ============================================================
     job = application.job
 
-    if (
-        job.interview_min_score and
-        application.voice_score >= job.interview_min_score
-    ):
+    if job.interview_min_score and application.voice_score >= job.interview_min_score:
         application.status = "shortlisted"
     else:
         application.status = "rejected"
@@ -454,6 +464,3 @@ async def bland_webhook(
     db.commit()
 
     return {"message": "Interview processed successfully"}
-
-
-

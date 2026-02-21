@@ -9,6 +9,7 @@ from ..models.application import CandidateApplication
 from ..schemas.profile import (
     ProfileCreate,
     ProfileResponse,
+    MyProfileResponse,
     RecruiterCandidateProfileResponse
 )
 from ..core.auth import get_current_user
@@ -49,7 +50,7 @@ def create_or_update_profile(
     return profile
 
 
-@router.get("/me", response_model=ProfileResponse)
+@router.get("/me", response_model=MyProfileResponse)
 def get_my_profile(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
@@ -62,7 +63,17 @@ def get_my_profile(
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
 
-    return profile
+    return {
+        "id": profile.id,
+        "user_id": profile.user_id,
+        "created_at": profile.created_at,
+        "full_name": profile.full_name,
+        "company_name": profile.company_name,
+        "experience_years": profile.experience_years,
+        "skills": profile.skills,
+        "email": current_user.email,
+        "phone": current_user.phone
+    }
 
 
 @router.get("/candidate/{candidate_user_id}", response_model=RecruiterCandidateProfileResponse)

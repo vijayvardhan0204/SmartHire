@@ -21,8 +21,7 @@ from ..core.resume_parser import extract_text_from_pdf
 from ..core.resume_scoring import calculate_resume_score
 from ..core.ai_resume_scoring import analyze_resume_with_ai
 from ..core.bland_ai import start_bland_interview
-# from ..core.ai_voice_scoring import calculate_voice_score
-# from ..core.interview_analysis import analyze_interview
+
 from ..core.ai_interview_evaluator import evaluate_interview
 
 router = APIRouter(prefix="/applications", tags=["Applications"])
@@ -278,19 +277,10 @@ def upload_resume(
 
     db.commit()
 
-    min_required_score = job.resume_min_score
-    is_above_min_required = (
-        True
-        if min_required_score is None
-        else resume_final_score > min_required_score
-    )
-
     return {
         "message": "Resume uploaded and analyzed",
         "resume_score": resume_final_score,
-        "status": application.status,
-        "min_required_score": min_required_score,
-        "is_above_min_required": is_above_min_required
+        "status": application.status
     }
 
 

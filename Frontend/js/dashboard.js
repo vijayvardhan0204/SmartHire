@@ -30,6 +30,35 @@ function statusClass(status) {
     return `status-chip status-${key.replace(/[^a-z0-9_-]/g, "")}`;
 }
 
+function renderApplicationInsights(applications) {
+    const totals = {
+        all: applications.length,
+        shortlisted: 0,
+        rejected: 0,
+        interviewScheduled: 0
+    };
+
+    applications.forEach((app) => {
+        const status = (app.status || "").toLowerCase();
+
+        if (status === "shortlisted") totals.shortlisted += 1;
+        if (status === "rejected") totals.rejected += 1;
+        if (status === "interview_scheduled" || status === "interview_pending") {
+            totals.interviewScheduled += 1;
+        }
+    });
+
+    const totalEl = document.getElementById("insightTotalApplications");
+    const shortlistedEl = document.getElementById("insightShortlisted");
+    const rejectedEl = document.getElementById("insightRejected");
+    const interviewScheduledEl = document.getElementById("insightInterviewScheduled");
+
+    if (totalEl) totalEl.innerText = String(totals.all);
+    if (shortlistedEl) shortlistedEl.innerText = String(totals.shortlisted);
+    if (rejectedEl) rejectedEl.innerText = String(totals.rejected);
+    if (interviewScheduledEl) interviewScheduledEl.innerText = String(totals.interviewScheduled);
+}
+
 /* ================= EXPERIENCE HELPERS ================= */
 
 function normalizeExperienceLevel(value) {
@@ -88,6 +117,8 @@ function showProfile() {
     if (currentProfile) {
         document.getElementById("viewFullName").innerText = currentProfile.full_name || "-";
         document.getElementById("viewCompany").innerText = currentProfile.company_name || "-";
+        document.getElementById("viewEmail").innerText = currentProfile.email || "-";
+        document.getElementById("viewPhone").innerText = currentProfile.phone || currentProfile.phone_number || "-";
         document.getElementById("viewExperience").innerText = displayExperience(currentProfile.experience_years);
         document.getElementById("viewSkills").innerText = currentProfile.skills || "-";
     }
@@ -152,6 +183,7 @@ async function loadDashboard() {
         if (!appRes.ok) return;
 
         const applications = await appRes.json();
+        renderApplicationInsights(applications);
         const container = document.getElementById("applicationsContainer");
         container.innerHTML = "";
 

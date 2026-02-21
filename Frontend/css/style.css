@@ -122,6 +122,7 @@ a:hover {
 .profile-card,
 .main-content,
 .right-panel,
+.update-panel,
 .jobs-container,
 .modal-content,
 .job-card,
@@ -446,7 +447,8 @@ button:active {
 
 .profile-card,
 .main-content,
-.right-panel {
+.right-panel,
+.update-panel {
     padding: 20px;
 }
 
@@ -454,6 +456,14 @@ button:active {
     position: sticky;
     top: 84px;
     height: fit-content;
+}
+
+.right-column {
+    position: sticky;
+    top: 84px;
+    height: fit-content;
+    display: grid;
+    gap: 12px;
 }
 
 .profile-card h3 {
@@ -534,6 +544,10 @@ button:active {
 
 .right-panel p {
     color: var(--ink-2);
+}
+
+.update-panel h3 {
+    margin-bottom: 8px;
 }
 
 #profileView p {
@@ -748,7 +762,8 @@ body > button:not(.logout-btn) {
 .jobs-container,
 .dashboard-layout > .profile-card,
 .dashboard-layout > .main-content,
-.dashboard-layout > .right-panel {
+.dashboard-layout > .right-panel,
+.dashboard-layout > .right-column {
     animation: cardIn 0.42s ease both;
 }
 
@@ -758,7 +773,8 @@ body > button:not(.logout-btn) {
 }
 
 .dashboard-shell > .panel:nth-child(3),
-.dashboard-layout > .right-panel {
+.dashboard-layout > .right-panel,
+.dashboard-layout > .right-column {
     animation-delay: 0.13s;
 }
 
@@ -783,6 +799,11 @@ body > button:not(.logout-btn) {
     }
 
     .right-panel {
+        position: static;
+    }
+
+    .right-column {
+        position: static;
         order: 3;
     }
 }

@@ -26,6 +26,22 @@ function objectToCards(containerId, obj) {
         .join("");
 }
 
+function renderUsersByRoleCards(roleCounts) {
+    const container = document.getElementById("usersByRole");
+    const roles = ["admin", "recruiter", "candidate"];
+
+    container.innerHTML = roles
+        .map((role) => `
+            <a class="role-link" href="admin-users.html?role=${role}">
+                <article class="list-card role-card">
+                    <h4>${role.charAt(0).toUpperCase() + role.slice(1)}</h4>
+                    <p>${safeText(roleCounts?.[role], "0")}</p>
+                </article>
+            </a>
+        `)
+        .join("");
+}
+
 async function loadAdminOverview() {
     try {
         const response = await fetch(`${API_BASE}/admin/overview`, {
@@ -45,7 +61,7 @@ async function loadAdminOverview() {
             <article class="stat-card"><p>Total Applications</p><h3>${data.totals.applications}</h3></article>
         `;
 
-        objectToCards("usersByRole", data.users_by_role);
+        renderUsersByRoleCards(data.users_by_role || {});
         objectToCards("applicationsByStatus", data.applications_by_status);
 
         const recentJobs = data.recent_jobs || [];
@@ -59,35 +75,6 @@ async function loadAdminOverview() {
                 `)
                 .join("")
             : "<p class='empty-state'>No recent jobs.</p>";
-
-        const users = data.users || [];
-        document.getElementById("allUsers").innerHTML = users.length
-            ? users
-                .map((user) => `
-                    <article class="list-card">
-                        <h4>${safeText(user.name, "Unnamed User")}</h4>
-                        <p>Email: ${safeText(user.email)}</p>
-                        <p>Role: ${safeText(user.role)}</p>
-                        <p>Phone: ${safeText(user.phone)}</p>
-                    </article>
-                `)
-                .join("")
-            : "<p class='empty-state'>No users found.</p>";
-
-        const recruiters = data.recruiters || [];
-        document.getElementById("recruiterDetails").innerHTML = recruiters.length
-            ? recruiters
-                .map((recruiter) => `
-                    <article class="list-card">
-                        <h4>${safeText(recruiter.name, "Unnamed Recruiter")}</h4>
-                        <p>Email: ${safeText(recruiter.email)}</p>
-                        <p>Phone: ${safeText(recruiter.phone)}</p>
-                        <p>Jobs Posted: ${safeText(recruiter.jobs_posted, "0")}</p>
-                        <p>Applications Received: ${safeText(recruiter.applications_received, "0")}</p>
-                    </article>
-                `)
-                .join("")
-            : "<p class='empty-state'>No recruiters found.</p>";
     } catch (error) {
         document.getElementById("adminStats").innerHTML = `<p class="empty-state">${error.message}</p>`;
     }

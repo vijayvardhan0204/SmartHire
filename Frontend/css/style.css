@@ -1,14 +1,20 @@
 :root {
-    --bg: #f3f7fb;
-    --surface: #ffffff;
-    --surface-soft: #f8fafc;
-    --text: #102033;
-    --text-muted: #5f7186;
-    --line: #d7e0ea;
-    --primary: #1f6feb;
-    --primary-hover: #195bc0;
-    --shadow: 0 10px 28px rgba(16, 32, 51, 0.08);
-    --radius: 12px;
+    --bg: #f2f3f6;
+    --bg-ink: #0f1b2d;
+    --surface: rgba(255, 255, 255, 0.9);
+    --surface-strong: #ffffff;
+    --surface-soft: #f8f9fc;
+    --text: #152236;
+    --text-muted: #607086;
+    --line: rgba(22, 39, 68, 0.14);
+    --line-strong: rgba(22, 39, 68, 0.3);
+    --primary: #142c52;
+    --primary-hover: #0f2444;
+    --accent: #b78a41;
+    --danger: #9f1f2e;
+    --shadow-sm: 0 10px 24px rgba(15, 27, 45, 0.08);
+    --shadow: 0 18px 46px rgba(15, 27, 45, 0.14);
+    --radius: 16px;
 }
 
 *,
@@ -17,14 +23,20 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    min-height: 100%;
+}
+
 body {
     margin: 0;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Manrope", "Segoe UI", sans-serif;
     color: var(--text);
     background:
-        radial-gradient(circle at top right, #e8f1ff 0, transparent 35%),
-        var(--bg);
-    line-height: 1.45;
+        radial-gradient(circle at 8% 12%, rgba(20, 44, 82, 0.14) 0, rgba(20, 44, 82, 0) 36%),
+        radial-gradient(circle at 92% 6%, rgba(183, 138, 65, 0.13) 0, rgba(183, 138, 65, 0) 34%),
+        linear-gradient(150deg, #f3f4f7 0%, #eef1f6 64%, #f5f6f9 100%);
+    line-height: 1.5;
 }
 
 h1,
@@ -35,12 +47,21 @@ p {
     margin: 0;
 }
 
+h2,
+h3 {
+    font-family: "Cormorant Garamond", "Times New Roman", serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
 a {
     color: var(--primary);
     text-decoration: none;
+    transition: color 0.2s ease;
 }
 
 a:hover {
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 
@@ -49,7 +70,19 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 24px;
+    padding: 28px;
+    position: relative;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    width: min(560px, 92vw);
+    height: min(560px, 92vw);
+    border-radius: 999px;
+    background: radial-gradient(circle at center, rgba(20, 44, 82, 0.16), transparent 68%);
+    filter: blur(8px);
+    z-index: 0;
 }
 
 .card,
@@ -59,71 +92,90 @@ a:hover {
 .jobs-container,
 .modal-content,
 .job-card,
-.application-card {
+.application-card,
+.panel,
+.stat-card,
+.list-card {
     background: var(--surface);
+    backdrop-filter: blur(6px);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-sm);
 }
 
 .card {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 360px;
-    padding: 28px;
-    text-align: center;
+    max-width: 430px;
+    padding: 32px;
+    text-align: left;
+    animation: cardIn 0.5s ease both;
 }
 
 .card h2 {
-    margin-bottom: 6px;
+    font-size: 31px;
+    margin-bottom: 8px;
 }
 
 .card p {
     color: var(--text-muted);
+    font-size: 15px;
 }
 
 form {
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
 input,
-select {
+select,
+textarea {
     width: 100%;
-    padding: 11px 12px;
-    margin: 8px 0;
-    border-radius: 10px;
+    padding: 12px 13px;
+    margin: 9px 0;
+    border-radius: 12px;
     border: 1px solid var(--line);
-    background: #fff;
+    background: rgba(255, 255, 255, 0.78);
     color: var(--text);
     font: inherit;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 input:focus,
-select:focus {
-    border-color: #90b4f8;
-    box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.12);
+select:focus,
+textarea:focus {
+    border-color: rgba(20, 44, 82, 0.5);
+    box-shadow: 0 0 0 4px rgba(20, 44, 82, 0.11);
+    background: #fff;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #82938f;
 }
 
 button {
     width: 100%;
-    padding: 11px 14px;
+    padding: 12px 15px;
     border: 0;
-    border-radius: 10px;
-    background: var(--primary);
+    border-radius: 11px;
+    background: linear-gradient(135deg, #1a3560 0%, #132a4d 100%);
     color: #fff;
     font: inherit;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.12s ease;
+    transition: transform 0.14s ease, filter 0.2s ease;
 }
 
 button:hover {
-    background: var(--primary-hover);
+    filter: brightness(1.05);
+    transform: translateY(-1px);
 }
 
 button:active {
-    transform: translateY(1px);
+    transform: translateY(0);
 }
 
 .link {
@@ -132,17 +184,21 @@ button:active {
 }
 
 .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 14px 24px;
     border-bottom: 1px solid var(--line);
-    background: var(--surface);
-    box-shadow: 0 2px 10px rgba(16, 32, 51, 0.04);
+    background: rgba(255, 255, 255, 0.84);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 18px rgba(11, 33, 28, 0.06);
 }
 
 .navbar h2 {
-    font-size: 20px;
+    font-size: 21px;
 }
 
 .navbar-actions {
@@ -155,44 +211,73 @@ button:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 92px;
-    padding: 10px 12px;
-    border-radius: 10px;
+    min-width: 98px;
+    padding: 10px 13px;
+    border-radius: 12px;
     border: 1px solid var(--line);
-    background: var(--surface-soft);
+    background: rgba(255, 255, 255, 0.72);
     color: var(--text);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .nav-link-btn:hover {
     text-decoration: none;
-    background: #eef4fb;
+    background: #fff;
+    border-color: rgba(183, 138, 65, 0.5);
 }
 
 .logout-btn {
     width: auto;
-    min-width: 92px;
+    min-width: 94px;
+}
+
+.btn-inline {
+    width: auto;
+    min-width: auto;
+}
+
+.create-submit-btn {
+    width: 90px;
+    padding: 7px 10px;
+    font-size: 14px;
+    border-radius: 8px;
 }
 
 .jobs-container {
-    max-width: 920px;
-    margin: 24px auto;
-    padding: 24px;
+    max-width: 980px;
+    margin: 28px auto;
+    padding: 28px;
+}
+
+.jobs-container h2 {
+    font-size: 29px;
+    margin-bottom: 8px;
+}
+
+#jobSearch {
+    margin-top: 10px;
 }
 
 #jobsContainer {
-    margin-top: 16px;
+    margin-top: 18px;
     display: grid;
     gap: 14px;
 }
 
 .job-card {
-    padding: 16px;
+    padding: 18px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow);
 }
 
 .job-card h3 {
-    margin-bottom: 6px;
+    margin-bottom: 7px;
 }
 
 .job-card p {
@@ -208,12 +293,12 @@ button:active {
 }
 
 .job-meta span {
-    padding: 4px 8px;
+    padding: 5px 9px;
     border-radius: 999px;
     font-size: 12px;
-    background: var(--surface-soft);
-    border: 1px solid var(--line);
-    color: var(--text-muted);
+    background: rgba(20, 44, 82, 0.09);
+    border: 1px solid rgba(20, 44, 82, 0.24);
+    color: #1c355d;
 }
 
 .job-card button {
@@ -222,17 +307,23 @@ button:active {
 
 .dashboard-layout {
     display: grid;
-    grid-template-columns: 250px 1fr 250px;
+    grid-template-columns: 280px minmax(0, 1fr) 280px;
     gap: 18px;
-    padding: 20px;
-    max-width: 1280px;
+    padding: 22px;
+    max-width: 1320px;
     margin: 0 auto;
 }
 
 .profile-card,
 .main-content,
 .right-panel {
-    padding: 18px;
+    padding: 20px;
+}
+
+.profile-card {
+    position: sticky;
+    top: 82px;
+    height: fit-content;
 }
 
 .profile-card h3 {
@@ -245,7 +336,7 @@ button:active {
 }
 
 .profile-card button + button {
-    margin-top: 8px;
+    margin-top: 10px;
 }
 
 .main-content h2 {
@@ -268,10 +359,10 @@ button:active {
 
 .status-chip {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 3px 9px;
     border-radius: 999px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     border: 1px solid var(--line);
     background: var(--surface-soft);
     color: var(--text);
@@ -281,29 +372,29 @@ button:active {
 .status-failed,
 .status-busy {
     background: #ffe9e9;
-    border-color: #f3b5b5;
-    color: #8b1e1e;
+    border-color: #efb0b8;
+    color: #8f1d2f;
 }
 
 .status-shortlisted,
 .status-selected,
 .status-hired {
-    background: #eaf8ee;
-    border-color: #b9e5c6;
-    color: #1d6b35;
+    background: #eef7f1;
+    border-color: #c0dcc8;
+    color: #1f5e34;
 }
 
 .status-interview_in_progress,
 .status-interview_scheduled,
 .status-interview_pending {
     background: #e8f2ff;
-    border-color: #b8d1f6;
+    border-color: #bdd2ef;
     color: #1b4f91;
 }
 
 .status-no_answer {
-    background: #fff4e5;
-    border-color: #f5d09b;
+    background: #fff2df;
+    border-color: #eccb95;
     color: #8c5a12;
 }
 
@@ -325,15 +416,16 @@ button:active {
     z-index: 1000;
     inset: 0;
     padding: 20px;
-    background: rgba(8, 18, 31, 0.45);
+    background: rgba(8, 18, 31, 0.52);
+    backdrop-filter: blur(4px);
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
     width: 100%;
-    max-width: 380px;
-    padding: 22px;
+    max-width: 420px;
+    padding: 24px;
 }
 
 .modal-content h3 {
@@ -342,33 +434,29 @@ button:active {
 
 .modal-content button[type="button"] {
     margin-top: 8px;
-    background: #6b7a8c;
+    background: linear-gradient(135deg, #6f7f8d 0%, #5b6975 100%);
 }
 
 .modal-content button[type="button"]:hover {
-    background: #556476;
+    filter: brightness(1.04);
 }
 
 .dashboard-shell {
-    max-width: 1100px;
-    margin: 24px auto;
-    padding: 0 20px 20px;
+    max-width: 1140px;
+    margin: 28px auto;
+    padding: 0 20px 24px;
     display: grid;
     gap: 16px;
 }
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 12px;
 }
 
 .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
     padding: 14px;
-    box-shadow: var(--shadow);
 }
 
 .stat-card p {
@@ -376,11 +464,11 @@ button:active {
     margin-bottom: 6px;
 }
 
+.stat-card h3 {
+    font-size: 24px;
+}
+
 .panel {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
     padding: 16px;
 }
 
@@ -397,10 +485,15 @@ button:active {
 }
 
 .list-card {
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 12px;
-    background: #fff;
+    padding: 13px;
+    background: rgba(255, 255, 255, 0.94);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.list-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--line-strong);
+    box-shadow: 0 14px 26px rgba(11, 33, 28, 0.08);
 }
 
 .list-card h4 {
@@ -409,6 +502,31 @@ button:active {
 
 .list-card p {
     color: var(--text-muted);
+}
+
+.role-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.role-link:hover {
+    text-decoration: none;
+}
+
+.role-card {
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.role-card:hover {
+    border-color: rgba(183, 138, 65, 0.5);
+    background: rgba(183, 138, 65, 0.1);
+}
+
+.role-card.active {
+    border-color: rgba(20, 44, 82, 0.5);
+    background: rgba(20, 44, 82, 0.1);
 }
 
 .score-row {
@@ -444,27 +562,16 @@ button:active {
 }
 
 textarea {
-    width: 100%;
     min-height: 120px;
-    border-radius: 10px;
-    border: 1px solid var(--line);
-    padding: 11px 12px;
-    font: inherit;
-    outline: none;
     resize: vertical;
-}
-
-textarea:focus {
-    border-color: #90b4f8;
-    box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.12);
 }
 
 .empty-state {
     color: var(--text-muted);
-    padding: 10px;
-    border: 1px dashed var(--line);
+    padding: 11px;
+    border: 1px dashed var(--line-strong);
     border-radius: 10px;
-    background: var(--surface-soft);
+    background: rgba(247, 250, 248, 0.9);
 }
 
 body > h2,
@@ -490,9 +597,43 @@ body > button:not(.logout-btn) {
     margin-top: 16px;
 }
 
-@media (max-width: 1024px) {
+.dashboard-shell > .panel,
+.dashboard-shell > .stats-grid,
+.jobs-container,
+.dashboard-layout > .profile-card,
+.dashboard-layout > .main-content,
+.dashboard-layout > .right-panel {
+    animation: cardIn 0.38s ease both;
+}
+
+.dashboard-shell > .panel:nth-child(2),
+.dashboard-layout > .main-content {
+    animation-delay: 0.06s;
+}
+
+.dashboard-shell > .panel:nth-child(3),
+.dashboard-layout > .right-panel {
+    animation-delay: 0.12s;
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 1160px) {
     .dashboard-layout {
         grid-template-columns: 1fr;
+    }
+
+    .profile-card {
+        position: static;
     }
 
     .right-panel {
@@ -502,7 +643,7 @@ body > button:not(.logout-btn) {
 
 @media (max-width: 640px) {
     .navbar {
-        padding: 12px 14px;
+        padding: 11px 14px;
     }
 
     .navbar-actions {
@@ -511,11 +652,18 @@ body > button:not(.logout-btn) {
 
     .nav-link-btn {
         min-width: auto;
+        padding: 9px 10px;
+        font-size: 13px;
     }
 
     .jobs-container,
     .card {
         padding: 18px;
+    }
+
+    .card h2,
+    .jobs-container h2 {
+        font-size: 25px;
     }
 
     .dashboard-layout {
@@ -524,5 +672,9 @@ body > button:not(.logout-btn) {
 
     .dashboard-shell {
         padding: 0 14px 16px;
+    }
+
+    .logout-btn {
+        min-width: 84px;
     }
 }

@@ -1,5 +1,6 @@
 let currentProfile = null;
 let pollingInterval = null;
+let isLoading = false;
 
 const API_BASE = `${window.location.protocol === "file:" ? "http:" : window.location.protocol}//${window.location.hostname || "127.0.0.1"}:8000`;
 
@@ -17,6 +18,8 @@ const STATUS_LABELS = {
     hired: "Hired"
 };
 
+/* ================= STATUS HELPERS ================= */
+
 function formatStatus(status) {
     const key = (status || "").toLowerCase();
     return STATUS_LABELS[key] || (status || "-");
@@ -27,14 +30,15 @@ function statusClass(status) {
     return `status-chip status-${key.replace(/[^a-z0-9_-]/g, "")}`;
 }
 
+/* ================= EXPERIENCE HELPERS ================= */
+
 function normalizeExperienceLevel(value) {
     if (!value) return "";
 
-    const text = String(value).trim();
-    const lower = text.toLowerCase();
+    const text = String(value).trim().toLowerCase();
 
-    if (["fresher", "1 to 3 years", "4 to 8 years", "9 and above"].includes(lower)) {
-        return lower;
+    if (["fresher", "1 to 3 years", "4 to 8 years", "9 and above"].includes(text)) {
+        return text;
     }
 
     const numeric = Number(text);
@@ -56,17 +60,52 @@ function displayExperience(value) {
 /* ================= SMART POLLING ================= */
 
 function startPolling() {
-    if (!pollingInterval) {
-        pollingInterval = setInterval(loadDashboard, 15000);
-        console.log("🔄 Smart polling started");
-    }
+    if (pollingInterval !== null) return;
+
+    pollingInterval = setInterval(() => {
+        if (!document.hidden) {
+            loadDashboard();
+        }
+    }, 15000);
+
+    console.log("🔄 Smart polling started");
 }
 
 function stopPolling() {
-    if (pollingInterval) {
+    if (pollingInterval !== null) {
         clearInterval(pollingInterval);
         pollingInterval = null;
         console.log("⛔ Polling stopped");
+    }
+}
+
+/* ================= VIEW SWITCHING ================= */
+
+function showProfile() {
+    document.getElementById("applicationsView").style.display = "none";
+    document.getElementById("profileView").style.display = "block";
+
+    if (currentProfile) {
+        document.getElementById("viewFullName").innerText = currentProfile.full_name || "-";
+        document.getElementById("viewCompany").innerText = currentProfile.company_name || "-";
+        document.getElementById("viewExperience").innerText = displayExperience(currentProfile.experience_years);
+        document.getElementById("viewSkills").innerText = currentProfile.skills || "-";
+    }
+}
+
+function showApplications() {
+    document.getElementById("profileView").style.display = "none";
+    document.getElementById("applicationsView").style.display = "block";
+}
+
+function applyInitialViewFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const view = (params.get("view") || "").toLowerCase();
+
+    if (view === "profile") {
+        showProfile();
+    } else {
+        showApplications();
     }
 }
 
@@ -74,8 +113,14 @@ function stopPolling() {
 
 async function loadDashboard() {
 
+    if (isLoading) return;
+    isLoading = true;
+
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+        isLoading = false;
+        return;
+    }
 
     try {
 
@@ -107,7 +152,6 @@ async function loadDashboard() {
         if (!appRes.ok) return;
 
         const applications = await appRes.json();
-
         const container = document.getElementById("applicationsContainer");
         container.innerHTML = "";
 
@@ -117,7 +161,6 @@ async function loadDashboard() {
 
             const status = (app.status || "").toLowerCase();
 
-            // Check if polling required
             if (
                 status === "interview_scheduled" ||
                 status === "interview_pending" ||
@@ -140,8 +183,7 @@ async function loadDashboard() {
             `;
         });
 
-        // Smart Polling Decision
-        if (needsRefresh && !document.hidden) {
+        if (needsRefresh) {
             startPolling();
         } else {
             stopPolling();
@@ -149,18 +191,10 @@ async function loadDashboard() {
 
     } catch (error) {
         console.error("Dashboard load failed:", error);
+    } finally {
+        isLoading = false;
     }
 }
-
-/* ================= TAB VISIBILITY CONTROL ================= */
-
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        stopPolling();
-    } else {
-        loadDashboard();
-    }
-});
 
 /* ================= PROFILE MODAL ================= */
 
@@ -168,17 +202,11 @@ function openProfile() {
     document.getElementById("profileModal").style.display = "flex";
 
     if (currentProfile) {
-        document.getElementById("updateFullName").value =
-            currentProfile.full_name || "";
-
-        document.getElementById("updateCompany").value =
-            currentProfile.company_name || "";
-
+        document.getElementById("updateFullName").value = currentProfile.full_name || "";
+        document.getElementById("updateCompany").value = currentProfile.company_name || "";
         document.getElementById("updateExperience").value =
             normalizeExperienceLevel(currentProfile.experience_years);
-
-        document.getElementById("updateSkills").value =
-            currentProfile.skills || "";
+        document.getElementById("updateSkills").value = currentProfile.skills || "";
     }
 }
 
@@ -186,35 +214,12 @@ function closeProfile() {
     document.getElementById("profileModal").style.display = "none";
 }
 
-function showProfile() {
-    document.getElementById("applicationsView").style.display = "none";
-    document.getElementById("profileView").style.display = "block";
-
-    if (currentProfile) {
-        document.getElementById("viewFullName").innerText =
-            currentProfile.full_name || "-";
-
-        document.getElementById("viewCompany").innerText =
-            currentProfile.company_name || "-";
-
-        document.getElementById("viewExperience").innerText =
-            displayExperience(currentProfile.experience_years);
-
-        document.getElementById("viewSkills").innerText =
-            currentProfile.skills || "-";
-    }
-}
-
-function showApplications() {
-    document.getElementById("profileView").style.display = "none";
-    document.getElementById("applicationsView").style.display = "block";
-}
-
-/* ================= PROFILE FORM SUBMIT ================= */
+/* ================= PROFILE SUBMIT ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    loadDashboard(); // Initial load
+    applyInitialViewFromQuery();
+    loadDashboard();
 
     const profileForm = document.getElementById("profileForm");
     if (!profileForm) return;
@@ -269,5 +274,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+/* ================= TAB VISIBILITY CONTROL ================= */
 
-
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        stopPolling();
+    } else {
+        loadDashboard();
+    }
+});

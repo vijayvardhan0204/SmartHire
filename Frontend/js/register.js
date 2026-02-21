@@ -5,7 +5,18 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const role = document.getElementById("role").value;
-    const phone = document.getElementById("phone").value;
+    const rawPhone = document.getElementById("phone").value;
+    const digits = rawPhone.replace(/\D/g, "");
+    let phone = "";
+
+    if (digits.length === 10) {
+        phone = `+91${digits}`;
+    } else if (digits.length === 12 && digits.startsWith("91")) {
+        phone = `+${digits}`;
+    } else {
+        alert("Enter a valid 10-digit phone number");
+        return;
+    }
 
     try {
         const response = await fetch("http://127.0.0.1:8000/users", {

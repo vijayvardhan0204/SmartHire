@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHire - Users by Role</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token) {
+        window.location.href = "index.html";
+    } else if ((role || "").toLowerCase() !== "admin") {
+        window.location.href = "index.html";
+    }
+</script>
+
+<header class="navbar">
+    <h2 id="rolePageTitle">Users</h2>
+    <div class="navbar-actions">
+        <a class="nav-link-btn" href="admin-dashboard.html">Back to Dashboard</a>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<main class="dashboard-shell">
+    <section class="panel">
+        <div class="panel-head">
+            <h3 id="roleListHeading">Role Users</h3>
+            <button id="createAdminBtn" class="btn-inline" type="button" style="display: none;">Create Admin</button>
+        </div>
+        <div id="roleUsersList" class="stack-list"></div>
+    </section>
+
+    <section class="panel" id="createAdminPanel" style="display: none;">
+        <div class="panel-head">
+            <h3>New Admin</h3>
+        </div>
+        <form id="createAdminForm" class="grid-form">
+            <input id="adminName" type="text" placeholder="Name" required>
+            <input id="adminEmail" type="email" placeholder="Email" required>
+            <input id="adminPhone" type="text" placeholder="Phone Number" required>
+            <input id="adminPassword" type="password" placeholder="Password" required>
+            <button class="btn-inline create-submit-btn" type="submit">Create</button>
+            <p id="createAdminMessage" class="empty-state" style="display: none;"></p>
+        </form>
+    </section>
+</main>
+
+<script src="js/admin-users.js"></script>
+<script>
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "index.html";
+}
+</script>
+</body>
+</html>

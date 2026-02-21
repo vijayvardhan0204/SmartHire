@@ -3,6 +3,7 @@ const authToken = localStorage.getItem("token");
 const role = (localStorage.getItem("role") || "").toLowerCase();
 
 let allJobs = [];
+
 function ensurePopupModal() {
     let modal = document.getElementById("appMessageModal");
     if (modal) return modal;
@@ -24,16 +25,11 @@ function ensurePopupModal() {
     card.style.width = "90%";
     card.style.padding = "20px";
     card.style.borderRadius = "12px";
-    card.style.boxShadow = "0 12px 40px rgba(0,0,0,0.2)";
 
     const message = document.createElement("p");
     message.id = "appMessageText";
     message.style.margin = "0 0 16px";
     message.style.lineHeight = "1.5";
-
-    const actions = document.createElement("div");
-    actions.style.display = "flex";
-    actions.style.justifyContent = "flex-end";
 
     const okBtn = document.createElement("button");
     okBtn.type = "button";
@@ -48,9 +44,8 @@ function ensurePopupModal() {
         modal.style.display = "none";
     };
 
-    actions.appendChild(okBtn);
     card.appendChild(message);
-    card.appendChild(actions);
+    card.appendChild(okBtn);
     modal.appendChild(card);
     document.body.appendChild(modal);
 
@@ -132,15 +127,19 @@ async function createApplicationAndUploadResume(jobId) {
     }
 
     try {
+        const file = await pickResumeFile();
+        if (!file) {
+            showPopup("Resume upload is required.");
+            return;
+        }
+
         const applicationResponse = await fetch(`${API_BASE}/applications/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${authToken}`
             },
-            body: JSON.stringify({
-                job_id: jobId
-            })
+            body: JSON.stringify({ job_id: jobId })
         });
 
         const applicationData = await applicationResponse.json().catch(() => ({}));
@@ -153,17 +152,21 @@ async function createApplicationAndUploadResume(jobId) {
             throw new Error("Application created, but no application id returned.");
         }
 
-        showPopup("Application created. Please upload your resume PDF now.");
-        const file = await pickResumeFile();
-        if (!file) {
-            showPopup("Application saved. Upload resume later from dashboard to start shortlisting.");
-            return;
-        }
-
         const uploadData = await uploadResumeFile(applicationId, file);
+        const uploadStatus = (uploadData.status || "").toLowerCase();
+        const explicitFlag = uploadData.is_above_min_required;
+        const resumeScore = Number(uploadData.resume_score);
+        const minRequiredScore = uploadData.min_required_score;
+        const isAboveMinRequired = typeof explicitFlag === "boolean"
+            ? explicitFlag
+            : (
+                minRequiredScore === null ||
+                typeof minRequiredScore === "undefined" ||
+                resumeScore > Number(minRequiredScore)
+            );
 
-        if ((uploadData.status || "").toLowerCase() === "interview_scheduled") {
-            showPopup("Your resume has been uploaded successfully. Please answer the upcoming interview call and complete the screening process.");
+        if (isAboveMinRequired || uploadStatus === "interview_scheduled") {
+            showPopup("Resume uploaded successfully. An interview call will be placed shortly. Please answer the call to complete your screening.");
         } else {
             showPopup("Resume uploaded successfully, but your score did not meet the minimum requirement for interview shortlisting.");
         }
@@ -243,7 +246,3 @@ async function loadJobs() {
 updateHomeLink();
 document.getElementById("jobSearch").addEventListener("input", filterJobs);
 loadJobs();
-
-
-
-

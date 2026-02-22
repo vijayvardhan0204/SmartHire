@@ -2,40 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartHire - Register</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/register.css">
 </head>
-
 <body>
+<header class="register-nav">
+    <a href="index.html" class="register-logo">SmartHire</a>
+    <p>Already registered? <a href="index.html">Login</a></p>
+</header>
 
-<div class="container">
-    <div class="card">
-        <h2>Create Account</h2>
+<main class="register-shell">
+    <section class="benefits-card">
+        <p class="brand-line">SmartHire - AI Powered Hiring Platform</p>
+        <h1>On registering, you can</h1>
+        <ul>
+            <li>Upload your resume and get AI-based screening</li>
+            <li>If shortlisted, receive an automated AI interview call</li>
+            <li>Track your applications in one place</li>
+        </ul>
+
+        <div class="illustration" aria-hidden="true">
+            <svg viewBox="0 0 620 290" role="presentation">
+                <defs>
+                    <linearGradient id="illBg" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#ecf4ff" />
+                        <stop offset="100%" stop-color="#f8fbff" />
+                    </linearGradient>
+                    <linearGradient id="illBlue" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#4f8ff0" />
+                        <stop offset="100%" stop-color="#0a66c2" />
+                    </linearGradient>
+                    <filter id="illShadow" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f3d78" flood-opacity="0.14" />
+                    </filter>
+                </defs>
+
+                <rect x="8" y="10" width="604" height="270" rx="28" fill="url(#illBg)" />
+                <ellipse cx="128" cy="46" rx="60" ry="30" fill="#dceaff" />
+                <ellipse cx="530" cy="52" rx="52" ry="26" fill="#e7e3ff" />
+
+                <g filter="url(#illShadow)">
+                    <rect x="40" y="62" width="160" height="186" rx="16" fill="#ffffff" stroke="#c8daf4" />
+                    <rect x="58" y="80" width="68" height="12" rx="6" fill="#0a66c2" opacity="0.22" />
+                    <rect x="58" y="102" width="124" height="7" rx="3.5" fill="#91a9cb" opacity="0.35" />
+                    <rect x="58" y="115" width="110" height="7" rx="3.5" fill="#91a9cb" opacity="0.28" />
+                    <rect x="58" y="128" width="132" height="7" rx="3.5" fill="#91a9cb" opacity="0.3" />
+                    <rect x="58" y="144" width="44" height="18" rx="9" fill="#edf4ff" />
+                    <rect x="106" y="144" width="34" height="18" rx="9" fill="#edf4ff" />
+                    <rect x="144" y="144" width="38" height="18" rx="9" fill="#edf4ff" />
+                    <text x="68" y="157" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#2b4f7f" font-weight="700">Python</text>
+                    <text x="114" y="157" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#2b4f7f" font-weight="700">SQL</text>
+                    <text x="151" y="157" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#2b4f7f" font-weight="700">React</text>
+                    <rect x="58" y="174" width="124" height="10" rx="5" fill="#e8f1fe" />
+                    <rect x="58" y="174" width="84" height="10" rx="5" fill="url(#illBlue)" />
+                </g>
+
+                <g filter="url(#illShadow)">
+                    <rect x="238" y="74" width="176" height="156" rx="16" fill="#ffffff" stroke="#c8daf4" />
+                    <rect x="256" y="90" width="122" height="12" rx="6" fill="#edf4ff" />
+                    <text x="265" y="99" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#23589b" font-weight="800">AI MATCHES SKILLS WITH JD</text>
+                    <rect x="256" y="112" width="140" height="8" rx="4" fill="#91a9cb" opacity="0.34" />
+                    <rect x="256" y="126" width="124" height="8" rx="4" fill="#91a9cb" opacity="0.26" />
+                    <rect x="256" y="140" width="148" height="8" rx="4" fill="#91a9cb" opacity="0.32" />
+                    <circle cx="332" cy="182" r="22" fill="#e9f8ef" stroke="#b5ddc5" />
+                    <text x="317" y="187" font-family="Manrope, Segoe UI, sans-serif" font-size="14" fill="#2e9d66" font-weight="800">85</text>
+                    <text x="338" y="187" font-family="Manrope, Segoe UI, sans-serif" font-size="10" fill="#2e9d66" font-weight="800">/100</text>
+                </g>
+
+                <g filter="url(#illShadow)">
+                    <rect x="448" y="52" width="136" height="198" rx="16" fill="#ffffff" stroke="#c8daf4" />
+                    <rect x="466" y="72" width="84" height="12" rx="6" fill="#edf4ff" />
+                    <rect x="466" y="96" width="100" height="7" rx="3.5" fill="#91a9cb" opacity="0.34" />
+                    <rect x="466" y="108" width="92" height="7" rx="3.5" fill="#91a9cb" opacity="0.28" />
+                    <rect x="466" y="120" width="104" height="7" rx="3.5" fill="#91a9cb" opacity="0.3" />
+                    <rect x="462" y="156" width="104" height="30" rx="15" transform="rotate(-14 462 156)" fill="#e9f8ef" stroke="#b5ddc5" />
+                    <text x="486" y="172" transform="rotate(-14 486 172)" font-family="Manrope, Segoe UI, sans-serif" font-size="11" fill="#236943" font-weight="800">APPROVED</text>
+                </g>
+
+                <path d="M202 146h24" stroke="#3c86df" stroke-width="4" stroke-linecap="round" />
+                <path d="M412 146h24" stroke="#3c86df" stroke-width="4" stroke-linecap="round" />
+                <path d="M224 146l-7-6m7 6l-7 6" stroke="#3c86df" stroke-width="3" stroke-linecap="round" />
+                <path d="M434 146l-7-6m7 6l-7 6" stroke="#3c86df" stroke-width="3" stroke-linecap="round" />
+
+                <circle cx="240" cy="44" r="8" fill="#b39cff" opacity="0.8" />
+                <circle cx="396" cy="44" r="8" fill="#8fb3ff" opacity="0.8" />
+            </svg>
+        </div>
+    </section>
+
+    <section class="form-card">
+        <h2>Create your SmartHire profile</h2>
+        <p class="sub">Find opportunities and get evaluated by AI-powered hiring.</p>
 
         <form id="registerForm">
-            <input type="text" id="name" placeholder="Full Name" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password (min 8, 1 number, 1 special char)" required>
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" required>
 
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Minimum 8 characters, 1 number, 1 special char" required>
+
+            <label for="phone">Mobile Number</label>
+            <input type="tel" id="phone" placeholder="10-digit mobile number" inputmode="numeric" maxlength="10" required>
+
+            <label for="role">Role</label>
             <select id="role" required>
-                <option value="">Select Role</option>
+                <option value="">Select role</option>
                 <option value="candidate">Candidate</option>
                 <option value="recruiter">Recruiter</option>
-                
             </select>
-            <input type="tel" id="phone" placeholder="Phone Number (10 digits)" inputmode="numeric" maxlength="10" required>
 
-
-            <button type="submit">Register</button>
+            <button type="submit">Register Now</button>
         </form>
-
-        <p class="link">
-            Already have an account? <a href="index.html">Login</a>
-        </p>
-    </div>
-</div>
+    </section>
+</main>
 
 <script src="js/register.js"></script>
-
 </body>
 </html>

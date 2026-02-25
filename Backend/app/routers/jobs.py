@@ -34,7 +34,6 @@ def create_job(
 def list_jobs(db: Session = Depends(get_db)):
     return db.query(JobListing).all()
 
-
 # ✅ Recruiter’s Own Jobs
 @router.get("/my", response_model=list[JobResponse])
 def get_my_jobs(

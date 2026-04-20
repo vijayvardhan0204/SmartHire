@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from .routers import users, auth, profile, jobs, applications, admin
 from .db.database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.scheduler import scheduler
+# from app.core.scheduler import scheduler
 
 
 # Import models so tables are registered
@@ -27,7 +27,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+@app.get("/")
+def home():
+    return {"message": "SmartHire backend running"}
 # Base.metadata.create_all(bind=engine)
 
 app.include_router(users.router)
@@ -36,3 +38,4 @@ app.include_router(profile.router)
 app.include_router(jobs.router)
 app.include_router(applications.router)
 app.include_router(admin.router)
+

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHire - Login</title>
+    <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+<header class="nav">
+    <a href="index.html" class="logo">SmartHire</a>
+    <a href="register.html" class="nav-link">Create account</a>
+</header>
+
+<main class="hero">
+    <section class="hero-copy">
+        <h1>Smarter Hiring Starts Here</h1>
+        <p class="description">SmartHire uses AI to analyze resumes, shortlist the best candidates, and conduct automated interview calls - helping companies hire faster and smarter.</p>
+
+        <form id="loginForm" class="login-card">
+            <input type="email" id="email" placeholder="Work email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Sign in with Email</button>
+        </form>
+
+        <p class="foot-note">If your resume is shortlisted, you may receive an automated AI interview call.</p>
+    </section>
+
+    <section class="hero-visual" aria-hidden="true">
+        <div class="visual-wrap">
+            <svg viewBox="0 0 680 520" role="presentation">
+                <defs>
+                    <linearGradient id="canvasBg" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#edf4ff" />
+                        <stop offset="100%" stop-color="#fbfdff" />
+                    </linearGradient>
+                    <linearGradient id="primaryGrad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#4e8ef0" />
+                        <stop offset="100%" stop-color="#0a66c2" />
+                    </linearGradient>
+                    <linearGradient id="softViolet" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#b8a9ff" />
+                        <stop offset="100%" stop-color="#98adff" />
+                    </linearGradient>
+                    <linearGradient id="deskGrad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#dce9ff" />
+                        <stop offset="100%" stop-color="#c5dcfb" />
+                    </linearGradient>
+                    <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
+                        <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#123a73" flood-opacity="0.14" />
+                    </filter>
+                    <filter id="cardShadow" x="-40%" y="-40%" width="180%" height="180%">
+                        <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#0f3a76" flood-opacity="0.16" />
+                    </filter>
+                </defs>
+                <rect x="8" y="16" width="664" height="488" rx="40" fill="url(#canvasBg)" />
+                <ellipse cx="108" cy="86" rx="84" ry="52" fill="#deebff" />
+                <ellipse cx="596" cy="96" rx="68" ry="40" fill="#ece8ff" />
+                <ellipse cx="340" cy="446" rx="284" ry="34" fill="#d4e3fb" opacity="0.76" />
+
+                <g opacity="0.82">
+                    <path d="M298 178c24-20 64-20 86 0" fill="none" stroke="#75a6ea" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 8" />
+                    <path d="M286 204c30-8 70-2 96 16" fill="none" stroke="#988fe8" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 8" />
+                    <circle cx="295" cy="179" r="4" fill="#5b92e0" />
+                    <circle cx="381" cy="220" r="4" fill="#8b80dd" />
+                </g>
+
+                <g filter="url(#softShadow)">
+                    <rect x="74" y="308" width="268" height="108" rx="24" fill="url(#deskGrad)" />
+                </g>
+
+                <g filter="url(#cardShadow)">
+                    <rect x="120" y="214" width="212" height="134" rx="16" fill="#1f385f" />
+                    <rect x="128" y="221" width="196" height="112" rx="12" fill="#f9fbff" />
+                    <rect x="140" y="247" width="56" height="16" rx="8" fill="#edf4ff" />
+                    <rect x="200" y="247" width="38" height="16" rx="8" fill="#edf4ff" />
+                    <rect x="242" y="247" width="46" height="16" rx="8" fill="#edf4ff" />
+                    <text x="147" y="258" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#2b4f7f" font-weight="700">Python</text>
+                    <text x="209" y="258" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#2b4f7f" font-weight="700">SQL</text>
+                    <text x="250" y="258" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#2b4f7f" font-weight="700">React</text>
+
+                    <rect x="140" y="272" width="162" height="6" rx="3" fill="#9cb0cd" opacity="0.4" />
+                    <rect x="140" y="282" width="174" height="6" rx="3" fill="#9cb0cd" opacity="0.3" />
+                    <rect x="140" y="292" width="152" height="6" rx="3" fill="#9cb0cd" opacity="0.25" />
+
+                    <text x="140" y="310" font-family="Manrope, Segoe UI, sans-serif" font-size="8.5" fill="#325885" font-weight="700">Screening</text>
+                    <rect x="183" y="304" width="108" height="8" rx="4" fill="#e7f0fe" />
+                    <rect x="183" y="304" width="74" height="8" rx="4" fill="url(#primaryGrad)" />
+
+                    <rect x="238" y="318" width="78" height="16" rx="8" fill="#e9f8ef" stroke="#b5ddc5" />
+                    <circle cx="252" cy="326" r="6" fill="#2e9d66" />
+                    <path d="M249 326l2 2 4-5" fill="none" stroke="#ffffff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+                    <text x="263" y="329" font-family="Manrope, Segoe UI, sans-serif" font-size="8" fill="#216943" font-weight="800">Shortlisted</text>
+                </g>
+
+                <g>
+                    <rect x="104" y="348" width="244" height="14" rx="7" fill="#21456e" />
+                    <rect x="146" y="360" width="160" height="10" rx="5" fill="#1e3f66" opacity="0.75" />
+                </g>
+
+                <g filter="url(#cardShadow)">
+                    <rect x="358" y="92" width="266" height="302" rx="20" fill="#ffffff" stroke="#c6d8f6" />
+                    <rect x="378" y="112" width="132" height="24" rx="12" fill="#eef4ff" />
+                    <text x="391" y="128" font-family="Manrope, Segoe UI, sans-serif" font-size="11" fill="#23589b" font-weight="800">AI Recruiting Assistant</text>
+
+                    <text x="378" y="160" font-family="Manrope, Segoe UI, sans-serif" font-size="15" fill="#1b365d" font-weight="700">Skills detected</text>
+                    <rect x="378" y="170" width="68" height="25" rx="12.5" fill="#edf4ff" />
+                    <rect x="450" y="170" width="56" height="25" rx="12.5" fill="#edf4ff" />
+                    <rect x="510" y="170" width="66" height="25" rx="12.5" fill="#edf4ff" />
+                    <text x="394" y="187" font-family="Manrope, Segoe UI, sans-serif" font-size="11" fill="#2b4f7f" font-weight="700">Python</text>
+                    <text x="467" y="187" font-family="Manrope, Segoe UI, sans-serif" font-size="11" fill="#2b4f7f" font-weight="700">SQL</text>
+                    <text x="529" y="187" font-family="Manrope, Segoe UI, sans-serif" font-size="11" fill="#2b4f7f" font-weight="700">React</text>
+
+                    <text x="378" y="224" font-family="Manrope, Segoe UI, sans-serif" font-size="15" fill="#1b365d" font-weight="700">Resume summary</text>
+                    <rect x="378" y="234" width="224" height="8" rx="4" fill="#97adca" opacity="0.36" />
+                    <rect x="378" y="248" width="236" height="8" rx="4" fill="#97adca" opacity="0.3" />
+                    <rect x="378" y="262" width="208" height="8" rx="4" fill="#97adca" opacity="0.25" />
+                    <rect x="378" y="276" width="192" height="8" rx="4" fill="#97adca" opacity="0.2" />
+
+                    <text x="378" y="312" font-family="Manrope, Segoe UI, sans-serif" font-size="15" fill="#1b365d" font-weight="700">Screening progress</text>
+                    <rect x="378" y="322" width="224" height="15" rx="7.5" fill="#e8f1fe" />
+                    <rect x="378" y="322" width="166" height="15" rx="7.5" fill="url(#primaryGrad)" />
+                    <circle cx="551" cy="329.5" r="6" fill="#ffffff" />
+                    <text x="378" y="354" font-family="Manrope, Segoe UI, sans-serif" font-size="11" fill="#5d769a" font-weight="700">Real-time AI scoring and shortlisting</text>
+                </g>
+
+                <g filter="url(#softShadow)">
+                    <rect x="308" y="134" width="44" height="44" rx="12" fill="url(#softViolet)" />
+                    <path d="M330 145v22M319 156h22" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+                </g>
+            </svg>
+        </div>
+    </section>
+</main>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

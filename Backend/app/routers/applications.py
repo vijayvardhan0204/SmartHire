@@ -392,8 +392,21 @@ async def bland_webhook(
     if status != "completed":
         return {"message": "Ignoring non-completed event"}
 
-    transcript = data.get("concatenated_transcript")
+    # transcript = data.get("concatenated_transcript")
+    # if not transcript:
+    #     return {"message": "Missing transcript"}
+    # Try all possible transcript fields
+    transcript = (
+        data.get("concatenated_transcript")
+        or data.get("transcript")
+        or data.get("call", {}).get("transcript")
+        or data.get("analysis", {}).get("transcript")
+    )
+
+    print("TRANSCRIPT FOUND:", transcript)
+
     if not transcript:
+        print("❌ No transcript in payload:", data)
         return {"message": "Missing transcript"}
 
     # ============================================================

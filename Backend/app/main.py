@@ -21,7 +21,7 @@ app.add_middleware(
     #     "http://localhost:5500",
     #     "null"
     # ],
-    allow_origins=[os.getenv("FRONTEND_URL")]
+    allow_origins=[os.getenv("FRONTEND_URL")],
     allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=False,
     allow_methods=["*"],

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/dashboard.css';
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const safeText = (value, fallback = "NA") => {
     if (value === null || typeof value === "undefined" || value === "") {

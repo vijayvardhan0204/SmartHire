@@ -56,4 +56,4 @@ app.include_router(admin.router)
 # ================= OPTIONAL ================= #
 
 # Uncomment only if needed (first time DB setup)
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)

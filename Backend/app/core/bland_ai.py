@@ -22,7 +22,7 @@ def start_bland_interview(phone_number: str, candidate_name: str, job_title: str
         "task": f"Conduct a screening interview for {candidate_name} applying for {job_title}. Ask about experience, skills, and communication ability.",
         "voice": "maya",
         "language": "en",
-        "webhook": "https://electrical-impermanently-trish.ngrok-free.dev/applications/bland-webhook",
+        "webhook": "https://smarthire-a8uj.onrender.com/applications/bland-webhook",
         "metadata": {
             "application_id": application_id
         },

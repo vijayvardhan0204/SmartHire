@@ -16,11 +16,12 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "null"
-    ],
+    # allow_origins=[
+    #     "http://127.0.0.1:5500",
+    #     "http://localhost:5500",
+    #     "null"
+    # ],
+    allow_origins=[os.getenv("FRONTEND_URL")]
     allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=False,
     allow_methods=["*"],
